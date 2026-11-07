@@ -13,12 +13,12 @@ Read the cheapest context first. Stop as soon as you have enough.
 
 | Task | Map | Reference doc |
 |---|---|---|
-| UI or client behaviour | `application-map.md` | `docs/design/` |
+| UI (user interface) or client behaviour | `application-map.md` | `docs/design/` |
 | Services, jobs, integrations | `service-map.md` | `docs/architecture.md` |
-| API contract | `api-map.md` | `docs/api/api-specification.md` |
+| API (Application Programming Interface) contract | `api-map.md` | `docs/api/api-specification.md` |
 | Data and persistence | `data-map.md` | `docs/database/data-model.md` |
 | Tests and failing checks | `testing-map.md` | `docs/testing/test-specification.md` |
-| CI, config, deployment | `deployment-map.md` | `docs/deployment/deployment.md` |
+| CI (Continuous Integration), config, deployment | `deployment-map.md` | `docs/deployment/deployment.md` |
 | Test strategy, plans, coverage | `testing-map.md` | `qa/strategy.md`, `qa/traceability.md` |
 
 Maps, indexes and summaries are navigation aids. The code is the truth.

@@ -16,6 +16,7 @@ import { checkCommits } from '../lib/commits.mjs';
 import { runLoop } from '../lib/loop.mjs';
 import { readJUnit, recordRun, loadHistory, findFlaky, writeFlaky, writeRunSummary, summarise, buildTrace, formatTrace, writeTrace } from '../lib/qa.mjs';
 import { git } from '../lib/git.mjs';
+import { scanInputs, addInputs, formatInputs, listInputs } from '../lib/inputs.mjs';
 import { resolvePipeline, savePipeline, writePipeline, describePipeline, readVersion, releaseNotes, PIPELINE_MODES, RELEASE_TARGETS } from '../lib/pipeline.mjs';
 import { renderDiscover, renderItem, normaliseTopic, topicFromHelpFlag, TOPICS, collect } from '../lib/discover.mjs';
 
@@ -43,6 +44,8 @@ Commands:
   init                 Install or upgrade (interactive; --yes for defaults or saved choices)
   status               Show the ticket board          --write  rewrite tickets/BOARD.md   --feature <f>
   gate <phase>         Check a phase gate: spec | implement --ticket <f/NN> | deliver --ticket <f/NN> | release --feature <f>
+  inputs               Team documents: list | scan <files or folders...> | add <files or folders...>
+                       --to <subfolder> --owner <name> --version <v> --dry-run (changed files keep the old version)
   drift                Changes since the last sync    --since <ref>   --mark (save HEAD as sync point)
   validate             Structure, tickets, ADRs, map paths, context   --task <api|database|deployment|testing>
   check-commits        Every commit references a ticket   --range <base>..<head>
@@ -69,7 +72,7 @@ Init options:
 Tools: ${PROVIDERS.join(', ')}
 `;
 
-const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope', 'pipeline', 'dev-branch', 'main-branch', 'release-targets', 'test', 'build', 'install', 'node', 'version', 'version-file', 'provider']);
+const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope', 'pipeline', 'dev-branch', 'main-branch', 'release-targets', 'test', 'build', 'install', 'node', 'version', 'version-file', 'provider', 'to', 'owner']);
 
 export function parseArgs(argv) {
   const flags = {};
@@ -321,6 +324,16 @@ function cmdDiscover(args, flags, targetDir) {
   process.stdout.write(renderDiscover(targetDir, first || 'all', { search: flags.search || null }));
 }
 
+function cmdInputs(args, flags, targetDir) {
+  const [sub = 'list', ...paths] = args;
+  if (sub === 'list') return console.log(listInputs(targetDir));
+  if (!['scan', 'add'].includes(sub)) throw new Error(`Unknown inputs command '${sub}'. Use: inputs list | scan <paths...> | add <paths...>`);
+  if (!paths.length) throw new Error(`inputs ${sub} needs at least one file or folder`);
+  const opts = { to: flags.to ?? null, owner: flags.owner || '', version: flags.version || null, dryRun: !!flags['dry-run'] };
+  const scan = sub === 'scan' ? scanInputs(targetDir, paths, opts) : addInputs(targetDir, paths, opts);
+  console.log(formatInputs(scan, { dryRun: opts.dryRun, write: sub === 'add' && !opts.dryRun }));
+}
+
 function cmdLoop(flags, targetDir) {
   const report = runLoop({
     root: targetDir,
@@ -384,6 +397,7 @@ async function main() {
     case 'check-commits': return cmdCheckCommits(flags, targetDir);
     case 'loop': return cmdLoop(flags, targetDir);
     case 'trace': return cmdTrace(flags, targetDir);
+    case 'inputs': return cmdInputs(args, flags, targetDir);
     case 'discover': return cmdDiscover(args, flags, targetDir);
     case 'pipeline': return cmdPipeline(flags, targetDir);
     case 'release-version': {

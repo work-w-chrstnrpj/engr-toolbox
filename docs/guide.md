@@ -15,7 +15,7 @@ Five words you will see everywhere:
 | **Ticket** | One unit of work: a file in `tickets/<feature>/NN-<slug>.md` with a type, a status, blockers, acceptance criteria, a progress log and evidence |
 | **Acceptance criterion** | One testable condition on a ticket, numbered `AC1`, `AC2`. Tests refer to it as `cart/01#AC1` |
 | **Evidence** | Proof the work is done: commits, tests run, review notes, docs updated. A ticket cannot be `done` without it |
-| **Gate** | A check the CLI runs before a phase: can I start this ticket, can I ship this feature |
+| **Gate** | A check the CLI (command-line interface) runs before a phase: can I start this ticket, can I ship this feature |
 | **Skill** | One reusable step the agent runs, like `/to-spec` or `/implement` |
 
 ---
@@ -40,25 +40,28 @@ Do this once. Open the project in your AI tool.
 /adopt-project
 ```
 
-The agent reads your code and docs, then writes `GLOSSARY.md`, ADRs for decisions already in the code, `docs/architecture.md`, and the maps in `.ai/maps/`. Nothing of yours is deleted.
+The agent reads your code and docs, then writes `GLOSSARY.md`, ADRs (Architecture Decision Records) for decisions already in the code, `docs/architecture.md`, and the maps in `.ai/maps/`. Nothing of yours is deleted.
 
-**The team handed you documents** (TDD, API spec, PRD):
+**The team handed you documents** (TDD (Technical Design Document), API (Application Programming Interface) spec, PRD (Product Requirements Document)):
 
 ```text
-/ingest docs/from-team/tdd-v2.pdf
+/ingest ~/Downloads/payments-team/          # a whole folder
+/ingest tdd-v2.pdf api.yaml erd.png         # or several files
 ```
 
-The file goes into `docs/inputs/` (read-only), gets a row in `docs/inputs/INDEX.md`, and its terms and decisions are extracted. Contradictions and open questions are listed for you.
+The agent previews every file as new, changed or unchanged, then copies the new and changed ones into `docs/inputs/<team>/` (read-only), keeping the folder's structure. A changed file keeps its previous version beside it with the date (`tdd.2026-11-07.md`), and every file gets a row in `docs/inputs/INDEX.md`. It then reads each one, adds terms to the glossary and decisions as ADRs, and lists contradictions and open questions for you, grouped by owner. Run it again when the team sends updates: only what changed is ingested.
+
+Terminal version: `engr inputs scan <folder> --to payments` to preview, `engr inputs add <folder> --to payments --owner "Payments team"` to copy, `engr inputs` to list.
 
 **New project:** fill the goal, tech stack and verification commands in `AGENTS.md`.
 
-**QA setup** (medium and large, the SDET does this once):
+**QA (Quality Assurance) setup**, medium and large sizes. The SDET (Software Development Engineer in Test) does this once:
 
 ```text
 /test-strategy
 ```
 
-You get `qa/strategy.md`: test pyramid, tools, environments, CI stages and quality gates.
+You get `qa/strategy.md`: test pyramid, tools, environments, CI (Continuous Integration) stages and quality gates.
 
 ---
 
@@ -80,7 +83,7 @@ The agent asks questions in rounds, each with a recommended answer. QA and SDET 
 /design
 ```
 
-You get `docs/design/cart/erd.md`, `flow-add-to-cart.md` and `api-changes.md` (Mermaid diagrams), reviewed in a PR. Dev tickets wait for this approval.
+You get `docs/design/cart/erd.md`, `flow-add-to-cart.md` and `api-changes.md` (Mermaid diagrams), reviewed in a PR (pull request). Dev tickets wait for this approval.
 
 ### Step 3 · Spec, architect
 
@@ -150,7 +153,7 @@ The agent checks the gate, claims the ticket, then for **every** acceptance crit
 /automate-tests cart/02
 ```
 
-UI or API tests for each criterion, run three times to catch flakes, results recorded:
+UI (user interface) or API tests for each criterion, run three times to catch flakes, results recorded:
 
 ```bash
 engr test-report --junit results/ --feature cart --ticket cart/02 --write
@@ -195,7 +198,7 @@ Two reviews in parallel: does it follow our standards, and does it do what the t
 /retro
 ```
 
-`/cut-release` runs the release gate and `cut-release`, proposes the next version, writes the `CHANGELOG.md` section from the done tickets, bumps the version and opens the PR to main. With the pipeline in `release` mode, merging it tests and publishes (GitHub Release, npm or Docker). Without the pipeline, it tells you the tag to push. `/retro` turns what went wrong into new checks or rules for next time.
+`/cut-release` runs the release gate, the test report and your checks, reviews the diff and rollback plan, proposes the next version, writes the `CHANGELOG.md` section from the done tickets, bumps the version and opens the PR to main. With the pipeline in `release` mode, merging it tests and publishes (GitHub Release, npm or Docker). Without the pipeline, it tells you the tag to push. `/retro` turns what went wrong into new checks or rules for next time.
 
 ---
 
@@ -203,7 +206,7 @@ Two reviews in parallel: does it follow our standards, and does it do what the t
 
 | Role | Typical day |
 |---|---|
-| 🏛️ architect | `/grill-with-docs`, `/design`, `/to-spec`, `/to-tickets`; `/ingest` new team docs; record decisions as ADRs |
+| 🏛️ architect | `/grill-with-docs`, `/design`, `/to-spec`, `/to-tickets`; `/ingest` new team docs (whole folders are fine); record decisions as ADRs |
 | 🔨 builder | `/cli status`, then `/implement <ticket>` in a fresh session; `diagnosing-bugs` for hard bugs |
 | 🔍 reviewer | `/code-review main` on each PR; read-only, never edits |
 | 🧪 qa | `/manual-testing`, exploratory sessions, `/report-bug`, re-tests |
@@ -231,7 +234,7 @@ Facts (maps, API and data docs) are fixed directly. Decisions are drafted as `pr
 
 **Commits** always name their ticket: `feat: add to cart [cart/01]`. Use `[no-ticket]` only for trivial housekeeping.
 
-**CI/CD:** see [section 7](#7-cicd-optional).
+**CI/CD (Continuous Integration and Continuous Delivery):** see [section 7](#7-cicd-optional).
 
 **Incoming bugs and requests** from others: `/triage`.
 
@@ -244,7 +247,8 @@ Facts (maps, API and data docs) are fixed directly. Decisions are drafted as `pr
 | Run a skill | `/to-spec` | Skills menu, or "run the to-spec skill" | n/a |
 | Use a role | "use the sdet agent to ..." | "act as the sdet agent" | n/a |
 | See the board | `/cli status` or "show the board" | "show the board" | `engr status` |
-| See what exists | `/cli discover skills` | "run the discover skill for roles" | `engr --help-discover-skillset` |
+| See what exists | `/cli discover skills` | "what skills do we have?" | `engr --help-discover-skillset` |
+| Explain simply | `/mentor ELI5 what is a gate?` · `/mentor that` (re-explain) | "explain like I'm 5: ..." | n/a |
 | Unsure what's next | `/next` | "run the next skill" | `engr status` |
 
 Everything is stored in files, so you can switch tools mid-feature: write the spec in Claude Code, implement in Codex. The ticket's progress log tells the next agent where things stand.

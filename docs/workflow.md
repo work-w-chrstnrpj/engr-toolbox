@@ -14,7 +14,7 @@ grill-with-docs → design* → to-spec → to-tickets → implement (per ticket
 
 One table, kept in one place: **[.agents/skills/README.md](../.agents/skills/README.md#which-skill-when)**. In your AI tool, `/next` reads it together with the ticket board and tells you the one next step; `/cli discover skills` lists what is installed.
 
-QA and SDET details: `.agents/workflows/quality.md`. Releasing: `.agents/workflows/release.md`.
+QA (Quality Assurance) and SDET (Software Development Engineer in Test) details: `.agents/workflows/quality.md`. Releasing: `.agents/workflows/release.md`.
 
 ## Ticket types and owners
 
@@ -32,7 +32,7 @@ QA and SDET details: `.agents/workflows/quality.md`. Releasing: `.agents/workflo
 | What | Where | Who updates it |
 |---|---|---|
 | Terms | `GLOSSARY.md` | grill-with-docs, domain-modeling |
-| Why (decisions) | `docs/adr/` | new ADR per decision; supersede, never rewrite |
+| Why (decisions) | `docs/adr/` | new ADR (Architecture Decision Record) per decision; supersede, never rewrite |
 | Team documents | `docs/inputs/` | ingest only; read-only |
 | Designs | `docs/design/` | design |
 | System as it is | `docs/api`, `docs/database`, `docs/deployment`, `docs/testing` | update-docs when a ticket lands |

@@ -2,9 +2,9 @@
 
 > Status: COMPLETE
 
-| Module | Responsibility | Code | ADRs |
+| Module | Responsibility | Code | ADRs (Architecture Decision Records) |
 |---|---|---|---|
-| CLI | Parse commands and flags, print results, exit codes | `bin/cli.mjs` | |
+| CLI (command-line interface) | Parse commands and flags, print results, exit codes | `bin/cli.mjs` | |
 | Config | Tiers (`extends`), role and skill metadata, install record | `lib/config.mjs` | |
 | Install | Copy `.agents/` subset, scaffold, CLI copy; write `engr-toolbox.json` | `lib/install.mjs` | 0002, 0003 |
 | Adapters | One generator per AI tool from the project's `.agents/` | `lib/generator.mjs` | 0003 |

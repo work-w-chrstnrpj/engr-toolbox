@@ -1,6 +1,6 @@
 ---
 name: ingest
-description: Bring a document from someone else (TDD, API spec, PRD, ERD, meeting notes, answered questionnaire) into docs/inputs/, record its version, and extract terms, decisions, and open questions.
+description: Bring documents from other people, one file, several files or a whole folder (TDD or Technical Design Document, API specification, PRD or Product Requirements Document, ERD or Entity Relationship Diagram, meeting notes, answered questionnaires), into docs/inputs/, keep their versions, and extract terms, decisions, contradictions and open questions.
 disable-model-invocation: true
 ---
 
@@ -9,19 +9,33 @@ disable-model-invocation: true
 
 # Ingest
 
-Team documents are **inputs: read-only, never edited**. Your work links to them.
+Team documents are **inputs: read-only, never edited**. Your work (designs, ADRs or Architecture Decision Records, specs, tickets) links to them.
 
-## Steps
+Works on one file, many files, or a whole folder: `/ingest ~/Downloads/payments-team/` or `/ingest tdd-v2.pdf api.yaml`.
 
-1. Save the file under `docs/inputs/` (keep the original format). If it is a link (Confluence, Google Docs), record the link instead of copying.
-2. Add or update its row in `docs/inputs/INDEX.md`: file, title, owner, version or date, source, ingested on, notes.
-3. **If this is a new version of a known input:** diff it against the previous version and list what changed. Keep the old version (rename with its version suffix).
-4. Extract, citing section numbers:
-   - **Terms** → call the Skill tool with `domain-modeling` and update `GLOSSARY.md` with `_Source_` lines.
-   - **Decisions already made** → ADRs with `Status: accepted (from input)` and a link to the input.
-   - **Contradictions** with existing ADRs, designs or code → list them; never silently pick one.
-   - **Open questions** → suggest `/to-questionnaire` for the owner.
-5. For a changed input, list every design doc, spec and ticket that relied on the old version (search their `Inputs` sections) and create a `doc-drift` ticket to update them.
-6. Report in five lines or fewer: what was ingested, what changed, what needs a decision.
+## 1. Bring the files in
+
+1. Preview: `node .ai/cli/bin/cli.mjs inputs scan <files or folders...> --to <team-or-topic>`. It lists every file as **new**, **changed** (an earlier version exists) or **unchanged**, and skips hidden files.
+   - Pick `--to` with the user: one subfolder per team or topic (`payments`, `mobile`), so `docs/inputs/` stays organised. Without it, a folder keeps its own name.
+2. Copy: the same command with `add` instead of `scan`, plus `--owner "<team or person>"` and `--version <v>` when known. Changed files keep their previous version next to them (`tdd.2026-11-07.md`), and every file gets a row in `docs/inputs/INDEX.md`.
+3. Links (Confluence, Google Docs, Notion): add a row to `INDEX.md` by hand with the link, owner and date. Do not copy them.
+
+## 2. Read and extract, file by file
+
+Work through the **new and changed** files only. For each, read it fully (PDF, Word, slides and images too), then extract, citing file and section:
+
+- **Terms** → call the Skill tool with `domain-modeling`; update `GLOSSARY.md` with a `_Source_` line.
+- **Decisions already made** → ADRs with `Status: accepted (from input)` and a link to the input.
+- **Requirements and acceptance criteria** → note them for `/to-spec`; do not write tickets yet.
+- **Contradictions** with other inputs, existing ADRs, designs or code → list them; never silently pick one.
+- **Open questions** → collect them for `/to-questionnaire`, grouped by owner.
+
+For a **changed** file, compare it with its previous version first and list what changed. Then find every design, spec and ticket whose `Inputs` cite it and open one `doc-drift` ticket to update them.
+
+For a large batch, do the files in order of importance (design docs, specs and requirements before notes), and record progress in a `doc-drift` or `onboarding` ticket so the work can continue in another session.
+
+## 3. Report
+
+At most ten lines: files ingested (new, changed, unchanged), the main terms and decisions added, contradictions found, open questions and who they are for, and the suggested next step (`/to-questionnaire`, `/grill-with-docs` or `/design`).
 
 When an input and our design disagree, the input is the stated intent. Disagreeing needs an ADR approved by the input's owner.

@@ -15,13 +15,13 @@ grill-with-docs → design* → to-spec → test-plan† → to-tickets → impl
 
 | Phase | Skill | Gate (must pass to move on) |
 |---|---|---|
-| Brainstorm | `grill-with-docs` | No open questions; glossary and ADRs updated |
-| Design | `design` | Design PR approved, recorded in the design ticket |
+| Brainstorm | `grill-with-docs` | No open questions; glossary and ADRs (Architecture Decision Records) updated |
+| Design | `design` | Design PR (pull request) approved, recorded in the design ticket |
 | Spec | `to-spec` | `gate spec`: `AGENTS.md` goal and stack set, `GLOSSARY.md` exists |
 | Tickets | `to-tickets` | Every ticket has type, acceptance criteria, blockers |
 | Build | `implement` | `gate implement --ticket <id>`: ready, unblocked, has criteria |
 | Close ticket | `update-docs` | Evidence filled; `validate` passes |
-| Release | `cut-release` | `gate release --feature <f>`: all tickets done with evidence; CI green |
+| Release | `cut-release` | `gate release --feature <f>`: all tickets done with evidence; CI (Continuous Integration) green |
 | Learn | `retro` | Accepted improvements become tickets |
 
 ## Context hygiene

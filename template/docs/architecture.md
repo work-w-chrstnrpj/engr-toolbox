@@ -2,7 +2,7 @@
 
 > Status: NOT_STARTED
 
-One page. Modules, boundaries and data flow, with links to code and ADRs. Filled by `/adopt-project` for existing repos or during `/design` for new ones.
+One page. Modules, boundaries and data flow, with links to code and ADRs (Architecture Decision Records). Filled by `/adopt-project` for existing repos or during `/design` for new ones.
 
 ## Modules
 

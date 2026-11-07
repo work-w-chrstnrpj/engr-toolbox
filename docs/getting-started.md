@@ -21,9 +21,9 @@ It asks four questions:
 | Which AI tools? (pick several) | ↑/↓ to move, Space to tick each tool you use, Enter to confirm. Claude Code, Codex, Cursor, Copilot, OpenCode, Windsurf, Cline, Kilo, Aider, Antigravity, OpenHands |
 | Where do tickets live? | `local` (markdown in `tickets/`), `github` (Issues via `gh`), `other` |
 
-5. **Where should skills and roles go?** `project` (default: committed in the repo, the whole team gets them) or `global` (once on your machine, shared by all your projects, like Matt Pocock's install). Project-specific files (AGENTS.md, glossary, docs, `qa/`, tickets, maps, the CLI) always stay in the project.
+5. **Where should skills and roles go?** `project` (default: committed in the repo, the whole team gets them) or `global` (once on your machine, shared by all your projects, like Matt Pocock's install). Project-specific files always stay in the project: AGENTS.md, glossary, docs, `qa/`, tickets, maps and the CLI (command-line interface).
 
-6. **CI/CD?** `none`, `test` (tests on PRs) or `release` (also release on merge to main), then branch names and release targets. Optional; change it later with `engr pipeline`.
+6. **CI/CD (Continuous Integration and Continuous Delivery)?** `none`, `test` (tests on every pull request) or `release` (also release on merge to main), then branch names and release targets. Optional; change it later with `engr pipeline`.
 
 Non-interactive: `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox init --yes --size medium --tools claude,codex,opencode --tracker local --pipeline test`
 
@@ -39,7 +39,7 @@ Then type `engr status`, `engr trace`, `engr --help-discover` in any project. It
 
 | Size | Adds |
 |---|---|
-| small | Ticket workflow, test-first build, review, glossary, ADRs, builder and reviewer roles |
+| small | Ticket workflow, test-first build, review, glossary, ADRs (Architecture Decision Records), builder and reviewer roles |
 | medium | Team documents (`docs/inputs`), design-first work (`docs/design`), the `qa/` layer (strategy, plans, cases, runs, traceability), triage, release checks, reference docs, context maps, architect, qa and sdet roles |
 | large | Parallel spec builds, wayfinding for huge efforts, architecture surveys, deployment docs, heavy context tools |
 
