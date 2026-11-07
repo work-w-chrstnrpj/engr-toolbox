@@ -71,7 +71,7 @@ Number every criterion `AC1`, `AC2`, ... and never renumber. Tests and manual ca
 
 ## Bug tickets
 
-`Type: bug` tickets also carry `**Severity:** S1 | S2 | S3 | S4` and `**Found in:**`. Use the `report-bug` skill to file them. Open S1 and S2 bugs block `gate release`.
+`Type: bug` tickets also carry `**Severity:** S1 | S2 | S3 | S4`, `**Found in:**` and, when raised while working another ticket, `**Found during:** <ticket>`. Use the `report-bug` skill to file them. Open S1 and S2 bugs block `gate release`.
 
 ## Who owns which type
 
@@ -82,6 +82,6 @@ design → architect · dev, bug → builder · automation → sdet · qa → qa
 1. **Claim before work.** Set `in-progress`, add a progress log entry, save, then start.
 2. **Log every session.** Two to five lines: what was done, what is next, any decision made (link the ADR).
 3. **Reference the ticket in every commit** (`<feature>/NN` or `#123`). CI rejects commits without one; use `[no-ticket]` only for trivial housekeeping.
-4. **Evidence before done.** Fill every Evidence line that applies: commit SHAs, PR link, test command and result, review findings, docs updated. A `done` ticket with empty evidence fails `validate`.
+4. **Evidence before done.** For code tickets, `gate deliver --ticket <id>` must pass before `in-review`: every criterion ticked and named by an automated test, Commits and Tests recorded. Fill every Evidence line that applies: commit SHAs, PR link, test command and result, review findings, docs updated. A `done` ticket with empty evidence fails `validate`.
 5. **Never delete tickets.** Use `wontfix` with a reason.
 6. Tick acceptance criteria as they are met, not at the end.

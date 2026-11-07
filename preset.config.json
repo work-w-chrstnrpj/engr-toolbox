@@ -1,7 +1,7 @@
 {
   "$schema": "./preset.schema.json",
   "name": "engr-toolbox",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "defaultTier": "medium",
   "providers": [
     "claude",
@@ -50,7 +50,8 @@
         "setup-pipeline",
         "cut-release",
         "release-check",
-        "pr"
+        "pr",
+        "report-bug"
       ],
       "workflows": [
         "main-flow",
@@ -101,7 +102,6 @@
         "test-strategy",
         "test-plan",
         "automate-tests",
-        "report-bug",
         "fix-flaky-tests",
         "test-report"
       ],

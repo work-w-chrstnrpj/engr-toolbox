@@ -42,7 +42,7 @@ Discover what this project has (terminal or coding agent):
 Commands:
   init                 Install or upgrade (interactive; --yes for defaults or saved choices)
   status               Show the ticket board          --write  rewrite tickets/BOARD.md   --feature <f>
-  gate <phase>         Check a phase gate: spec | implement --ticket <f/NN> | release --feature <f>
+  gate <phase>         Check a phase gate: spec | implement --ticket <f/NN> | deliver --ticket <f/NN> | release --feature <f>
   drift                Changes since the last sync    --since <ref>   --mark (save HEAD as sync point)
   validate             Structure, tickets, ADRs, map paths, context   --task <api|database|deployment|testing>
   check-commits        Every commit references a ticket   --range <base>..<head>
@@ -332,6 +332,10 @@ function cmdLoop(flags, targetDir) {
     maxAttempts: Number(flags['max-attempts'] || 3),
     dryRun: !!flags['dry-run']
   });
+  if (report.newTickets.length) {
+    console.log(`\nTickets raised during this run (${report.newTickets.length}), triage them with /triage:`);
+    for (const t of report.newTickets) console.log(`  ${t.id}  ${t.type}${t.severity ? ` ${t.severity}` : ''}  ${t.status}  ${t.title}  (found during ${t.foundDuring})`);
+  }
   console.log(`\nLoop stopped: ${report.stoppedBecause}`);
 }
 

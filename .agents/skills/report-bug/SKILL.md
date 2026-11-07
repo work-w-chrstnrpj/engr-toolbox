@@ -14,6 +14,7 @@ description: File a reproducible bug ticket with severity, steps, expected and a
 ```markdown
 **Severity:** S1 | S2 | S3 | S4
 **Found in:** <feature/NN#ACn, test case TC-NN, or environment and build>
+**Found during:** <ticket being worked when it was found, if any>
 
 ## Steps to reproduce
 1. ...
@@ -37,4 +38,4 @@ Build or commit, environment, browser or device, test data used.
 
 Open S1 and S2 bugs in a feature block `gate release`.
 
-4. Set status `needs-triage` (or `ready-for-agent` if fully specified and the user agrees). Link the bug from the run report or failing test's ticket.
+4. Set status `needs-triage` (or `ready-for-agent` if fully specified and the user agrees). Bugs found by an agent during `implement` or the unattended loop always start as `needs-triage`: a human decides when they are worked. Link the bug from the run report or failing test's ticket.

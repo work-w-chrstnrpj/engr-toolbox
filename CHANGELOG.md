@@ -4,6 +4,15 @@ All notable changes to this project template are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.2.0] - 2026-11-07
+
+### Added
+
+- `gate deliver --ticket <id>`: a ticket's definition of done. Every acceptance criterion ticked; for code tickets every criterion named by an automated test; no open blockers; Commits and Tests evidence.
+- `implement` keeps iterating (tests, full suite, review, docs, evidence) until `gate deliver` passes, and has explicit rules for bugs found along the way: fix your own, fix small touched ones with a regression test, raise the rest with `report-bug` (`Found during`), stop on blockers and S1.
+- `loop` requires `gate deliver` as well as the verify command, retries with the exact failures as feedback, lists tickets raised during the run, and stops on an S1 bug. Bugs it raises start as `needs-triage` and are never worked automatically.
+- `report-bug` moved to the small tier; `Found during` field on bug tickets.
+
 ## [3.1.0] - 2026-11-07
 
 ### Added
