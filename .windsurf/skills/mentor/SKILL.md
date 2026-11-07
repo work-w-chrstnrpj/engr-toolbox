@@ -1,6 +1,6 @@
 ---
 name: mentor
-description: Answer or work in teaching mode: explain simply first, then introduce the right terms. Changes style only, not who owns the work.
+description: Teaching mode. Explain simply first, then introduce the right terms; or re-explain the last message that did not land, using the project's glossary. Changes style only, not who owns the work.
 disable-model-invocation: true
 ---
 
@@ -9,13 +9,21 @@ disable-model-invocation: true
 
 # Mentor
 
-Apply to the current request only. Combine with any task: `/implement 03 - mentor: explain each step`.
+Applies to the current request only. Combine it with any task: `/implement 03 - mentor: explain each step`.
+
+## Explain
 
 - Do not assume the user knows the topic. Start with the simplest true explanation.
 - Then name the correct technical terms and define them (use `GLOSSARY.md` for project terms).
-- One analogy or small example when it helps.
-- Honour an ELI level if given (`mentor ELI12`).
-- End with the practical takeaway.
-- Stay short. Teaching is not padding.
+- One analogy or small example when it helps. Honour an ELI level if given (`mentor ELI12`).
+- End with the practical takeaway. Stay short: teaching is not padding.
 
-If a message still does not land, use `/wait-what`.
+## Re-explain ("wait, what?")
+
+When the user did not follow your last message (`/mentor that`, `/mentor what?`, "I don't get it"):
+
+1. Find what they were missing: a term, a skipped step, or context only you had.
+2. Re-pitch it in plain language, shortest first, defining terms with `GLOSSARY.md` wording.
+3. End with one line: what it means for them, or what they should do next.
+
+No new information and no lecture. If a fuzzy project term caused the confusion, suggest adding it to `GLOSSARY.md`.

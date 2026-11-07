@@ -1,73 +1,98 @@
 # Skills
 
-Each skill is one reusable step. Skills marked **you** run only when you type them (`/name`); they orchestrate. Skills marked **auto** can also be picked up by the agent when the task fits; they hold reusable discipline. A **you** skill may call **auto** skills, never another **you** skill.
+**This file is the single source for "which skill when".** The `next` skill reads it, the docs link to it, and `discover skills` lists the descriptions. When you add, rename or remove a skill, update this file and nothing else.
 
-Adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT) where noted with ★. See `THIRD_PARTY_NOTICES.md`.
+Skills marked **you** run only when you type them (`/name`); they orchestrate. Skills marked **auto** can also be picked up by the agent when the task fits; they hold reusable discipline. A **you** skill may call **auto** skills, never another **you** skill. ★ = adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT, see `THIRD_PARTY_NOTICES.md`).
 
-## Main flow
+## Which skill when
 
-| Step | Skill | Invoked by |
-|---|---|---|
-| Onboard an existing repo | `adopt-project` | you |
-| Bring in team documents | `ingest` | you |
-| Brainstorm | `grill-with-docs` ★ | you |
-| Design (ERD, flows, API) | `design` | you |
-| Spec | `to-spec` ★ | you |
-| Tickets | `to-tickets` ★ | you |
-| Build one ticket | `implement` ★ | you |
-| Build a whole spec in parallel | `implement-spec` ★ | you |
-| Triage incoming work | `triage` ★ | you |
-| Release | `release-check`, `pr` ★ | auto |
-| Set up CI/CD (optional) | `setup-pipeline` | you |
-| Prepare a release | `cut-release` | you |
-| Retrospective | `retro` ★ | you |
-| What now? | `next` | you |
-| Run a workflow command for me | `cli` (`/cli status`, `/cli gate release --feature cart`) | auto |
-| What exists? | `discover` (`/discover skills`, `roles`, `workflows`, `docs`, `structure`) | auto |
+### Main flow
 
-## Disciplines
+| Where you are | Run |
+|---|---|
+| Existing repo, not onboarded yet (no `GLOSSARY.md` or maps) | `/adopt-project` |
+| The team handed you documents (TDD, API spec, PRD) | `/ingest` |
+| New idea or change | `/grill-with-docs` ★ |
+| Idea is clear, the team wants ERD, flows or API design first | `/design` |
+| Idea or design is clear | `/to-spec` ★ |
+| Spec exists, project has `qa/`, no test plan yet | `/test-plan` |
+| Spec (and test plan) exist, no tickets | `/to-tickets` ★ |
+| Tickets are ready | `/implement <ticket>` ★ (fresh session each), `/implement-spec` ★ (all in parallel), or `/cli loop` (unattended) |
+| Automation tickets are ready | `automate-tests` |
+| QA tickets are ready | `manual-testing` |
+| Tickets are `in-review` | `code-review` ★, then merge |
+| A feature is done, ready to ship a version | `/cut-release` |
+| After a feature or a bad session | `/retro` ★ |
 
-| Skill | Purpose | Invoked by |
-|---|---|---|
-| `tickets` | Ticket format, states, evidence rule | auto |
-| `grilling` ★ | Interview until every decision is made | auto |
-| `tdd` ★ | Red-green loop at agreed seams | auto |
-| `code-review` ★ | Standards and spec review in parallel | auto |
-| `diagnosing-bugs` ★ | Feedback loop first, then fix | auto |
-| `domain-modeling` ★ | Glossary and ADRs | auto |
-| `codebase-design` ★ | Deep modules, seams | auto |
-| `prototype` ★ | Throwaway code for one question | auto |
-| `update-docs` | Keep facts current, flag decisions | auto |
-| `ask-repo-question` | Answer questions, no edits | auto |
-| `use-context-tools` | When to use heavier context tools | auto |
-| `generate-rca` | Formal RCA from a finished investigation | auto |
-| `sync-ai-adapters` | Regenerate tool adapters | auto |
+### Side roads
 
-## Quality (QA and SDET)
+| Situation | Run |
+|---|---|
+| Unsure what to do next | `/next` |
+| Want to see what is installed, or run a workflow command | `cli` (`/cli status`, `/cli discover skills`) |
+| Incoming bugs or requests from others | `/triage` ★ |
+| Something is broken and the cause is not obvious | `diagnosing-bugs` ★ |
+| A test, run or user found a defect | `report-bug` |
+| CI is unreliable, tests fail intermittently | `fix-flaky-tests` |
+| An incident needs a formal report | `generate-rca` |
+| Teammates changed code outside the AI | `update-docs` (uses `drift`) |
+| Set up or change CI/CD, different steps per branch | `/setup-pipeline` |
+| Project has no test strategy yet (`qa/` exists) | `/test-strategy` |
+| Go/no-go numbers for a feature | `test-report` |
+| A huge, unclear effort | `/wayfinder` ★ |
+| The codebase feels tangled | `/improve-codebase-architecture` ★ |
+| A design question needs running code | `prototype` ★ |
+| You need an answer from another person | `/to-questionnaire` ★ |
+| A question about the code, no changes | `ask-repo-question` |
+| Moving work to another tool or person | `/handoff` ★ |
+| Didn't understand a message, or want teaching | `/mentor` (`/mentor that` re-explains the last message) |
+| Want critique | `/coach` |
 
-| Skill | Purpose | Invoked by | Owner |
+## All skills
+
+| Skill | What it does | Invoked by | Owner |
 |---|---|---|---|
+| `adopt-project` | Onboard an existing repo: glossary, ADRs, architecture, maps | you | architect |
+| `ingest` | Bring a team document into `docs/inputs/` and extract terms, decisions, questions | you | architect |
+| `grill-with-docs` ★ | Brainstorm by interview, recording terms and decisions | you | all |
+| `design` | ERD, flows, API changes for a design ticket | you | architect |
+| `to-spec` ★ | Turn the conversation into a spec | you | architect |
 | `test-strategy` | Pyramid, tools, environments, CI stages, quality gates (once) | you | sdet |
-| `test-plan` | Risk-based plan per spec; creates qa and automation tickets | you | sdet, qa |
+| `test-plan` | Risk-based plan per spec; lists qa and automation tickets | you | sdet, qa |
+| `to-tickets` ★ | Thin end-to-end tickets with blockers | you | architect |
+| `triage` ★ | Move incoming issues through the ticket states | you | all |
+| `implement` ★ | One ticket to full delivery: tests per criterion, checks, review, docs, evidence | you | builder |
+| `implement-spec` ★ | All tickets of a spec in parallel on one branch | you | builder |
 | `automate-tests` | UI, API, contract and integration automation traced to criteria | auto | sdet |
+| `manual-testing` | Write and run manual cases with evidence | auto | qa |
+| `report-bug` | Reproducible bug ticket with severity | auto | all |
 | `fix-flaky-tests` | Quarantine, diagnose and fix flaky tests | auto | sdet |
 | `test-report` | Go/no-go report from results, traceability and bugs | auto | sdet |
-| `report-bug` | Reproducible bug ticket with severity | auto | qa, sdet |
-| `create-manual-test-cases` | Manual cases in `qa/cases/` | auto | qa |
-| `execute-manual-test-cases` | Manual runs in `qa/runs/` with evidence | auto | qa |
-
-## Helpers
-
-| Skill | Purpose | Invoked by |
-|---|---|---|
-| `wayfinder` ★ | Map a huge, unclear effort as decision tickets | you |
-| `improve-codebase-architecture` ★ | Find deepening opportunities | you |
-| `handoff` ★ | Portable summary for another tool or person | you |
-| `to-questionnaire` ★ | Questions for someone else to answer | you |
-| `wait-what` ★ | Re-explain a confusing message | you |
-| `mentor` | Teaching style | you |
-| `coach` | Critique style | you |
+| `code-review` ★ | Standards and spec review in parallel | auto | reviewer |
+| `cut-release` | Gate, checks, version, changelog, PR to main | you | all |
+| `setup-pipeline` | Design and write the CI/CD pipeline per branch | you | sdet, builder |
+| `pr` ★ | Pull request body | auto | all |
+| `retro` ★ | Improve the environment after a session | you | all |
+| `tickets` | Ticket format, states, evidence rule | auto | all |
+| `grilling` ★ | Interview until every decision is made | auto | all |
+| `tdd` ★ | Red-green loop at agreed seams | auto | builder, sdet |
+| `diagnosing-bugs` ★ | Feedback loop first, then fix | auto | builder, qa |
+| `domain-modeling` ★ | Glossary and ADRs | auto | architect |
+| `codebase-design` ★ | Deep modules and seams | auto | architect, builder |
+| `prototype` ★ | Throwaway code for one question | auto | architect, builder |
+| `update-docs` | Keep facts current, flag decisions | auto | builder |
+| `ask-repo-question` | Answer questions, no edits | auto | all |
+| `use-context-tools` | When to use heavier context tools | auto | all |
+| `generate-rca` | Formal RCA from a finished investigation | auto | qa, builder |
+| `cli` | Run workflow commands, discover what is installed, regenerate tool files | auto | all |
+| `next` | Read the board and this table, give the one next step | you | all |
+| `wayfinder` ★ | Map a huge, unclear effort as decision tickets | you | architect |
+| `improve-codebase-architecture` ★ | Find deepening opportunities | you | architect |
+| `handoff` ★ | Portable summary for another tool or person | you | all |
+| `to-questionnaire` ★ | Questions for someone else to answer | you | architect |
+| `mentor` | Teaching style; re-explain the last message | you | all |
+| `coach` | Critique style | you | all |
 
 ## Adding a skill
 
-Only add one when it is a repeatable step with clear inputs, steps and output that existing skills cannot compose. Domain checklists belong in role playbooks.
+Only add one when it is a repeatable step with clear inputs, steps and output that existing skills cannot compose. Domain checklists belong in role playbooks. Add it to the two tables above and to a tier in `preset.config.json`.

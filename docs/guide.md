@@ -2,7 +2,7 @@
 
 From install to release, with one example feature (**Add to cart**) followed all the way through.
 
-**Contents:** [Key ideas](#key-ideas) · [1. Install](#1-install) · [2. Onboard](#2-onboard) · [3. One feature, start to finish](#3-one-feature-start-to-finish) · [4. Day to day by role](#4-day-to-day-by-role) · [5. Working in a team](#5-working-in-a-team) · [6. Claude Code, Codex or terminal](#6-claude-code-codex-or-terminal) · [7. Unattended loop](#7-unattended-loop) · [8. Customising](#8-customising) · [9. FAQ](#9-faq)
+**Contents:** [Key ideas](#key-ideas) · [1. Install](#1-install) · [2. Onboard](#2-onboard) · [3. One feature, start to finish](#3-one-feature-start-to-finish) · [4. Day to day by role](#4-day-to-day-by-role) · [5. Working in a team](#5-working-in-a-team) · [6. Claude Code, Codex or terminal](#6-claude-code-codex-or-terminal) · [7. CI/CD](#7-cicd-optional) · [8. Unattended loop](#8-unattended-loop) · [9. Customising](#9-customising) · [10. FAQ](#10-faq)
 
 ---
 
@@ -22,30 +22,11 @@ Five words you will see everywhere:
 
 ## 1. Install
 
-In your project folder (Node 18+):
-
 ```bash
 npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox
 ```
 
-`--allow-git=all` is needed on npm 12 and newer, which block installs from GitHub by default (`EALLOWGIT`).
-
-| Question | Pick | Tip |
-|---|---|---|
-| New or existing project? | `new` / `existing` | `new` also creates `application/`, `service/`, `shared/`, `tests/` |
-| Size? | `small` / `medium` / `large` | Team work or QA? Pick `medium` |
-| AI tools? | ↑/↓ and Space to tick several | Pick every tool your team uses |
-| Where do tickets live? | `local` / `github` / `other` | `local` = markdown files in `tickets/` |
-| Skills and roles where? | `project` / `global` | Teams: `project`. Just you, many repos: `global` |
-| CI/CD? | `none` / `test` / `release` | Optional; branch names and release targets come next |
-
-Optional, once per machine, for the short `engr` command:
-
-```bash
-npm install -g --allow-git=all github:work-w-chrstnrpj/engr-toolbox
-```
-
-Commit what was installed. Your teammates get the same setup by pulling.
+Every install question, the sizes, project vs global, the short `engr` command and upgrading are in **[Getting started](getting-started.md)**. Commit what was installed; teammates get the same setup by pulling.
 
 ---
 
@@ -178,8 +159,7 @@ engr test-report --junit results/ --feature cart --ticket cart/02 --write
 ### Step 8 · Manual testing, QA
 
 ```text
-/create-manual-test-cases cart/03
-/execute-manual-test-cases cart/03
+/manual-testing cart/03
 ```
 
 Cases in `qa/cases/cart/`, each with `Covers: cart/01#AC2`. Results in `qa/runs/` (pass, fail, blocked, not run). Every failure:
@@ -215,7 +195,7 @@ Two reviews in parallel: does it follow our standards, and does it do what the t
 /retro
 ```
 
-`/cut-release` runs the release gate and `release-check`, proposes the next version, writes the `CHANGELOG.md` section from the done tickets, bumps the version and opens the PR to main. With the pipeline in `release` mode, merging it tests and publishes (GitHub Release, npm or Docker). Without the pipeline, it tells you the tag to push. `/retro` turns what went wrong into new checks or rules for next time.
+`/cut-release` runs the release gate and `cut-release`, proposes the next version, writes the `CHANGELOG.md` section from the done tickets, bumps the version and opens the PR to main. With the pipeline in `release` mode, merging it tests and publishes (GitHub Release, npm or Docker). Without the pipeline, it tells you the tag to push. `/retro` turns what went wrong into new checks or rules for next time.
 
 ---
 
@@ -226,7 +206,7 @@ Two reviews in parallel: does it follow our standards, and does it do what the t
 | 🏛️ architect | `/grill-with-docs`, `/design`, `/to-spec`, `/to-tickets`; `/ingest` new team docs; record decisions as ADRs |
 | 🔨 builder | `/cli status`, then `/implement <ticket>` in a fresh session; `diagnosing-bugs` for hard bugs |
 | 🔍 reviewer | `/code-review main` on each PR; read-only, never edits |
-| 🧪 qa | `/create-manual-test-cases`, `/execute-manual-test-cases`, exploratory sessions, `/report-bug`, re-tests |
+| 🧪 qa | `/manual-testing`, exploratory sessions, `/report-bug`, re-tests |
 | 🤖 sdet | `/test-plan` per spec, `/automate-tests`, `engr test-report --junit ... --write`, `/fix-flaky-tests`, `/test-report` before release |
 
 Everyone shares the same tickets, criteria, glossary, ADRs and designs. Each role writes to its own area: code (builder), `qa/cases` and `qa/runs` (qa), the automation suite and `qa/flaky.md` (sdet).
@@ -251,7 +231,7 @@ Facts (maps, API and data docs) are fixed directly. Decisions are drafted as `pr
 
 **Commits** always name their ticket: `feat: add to cart [cart/01]`. Use `[no-ticket]` only for trivial housekeeping.
 
-**CI/CD (optional):** `/setup-pipeline` asks what each branch runs and writes the YAML (different steps per branch are fine), or `engr pipeline --mode test --write` for defaults. Every PR into develop or main then runs your tests plus `validate`, `sync --check` and `check-commits`. With `--mode release`, merging to main also releases.
+**CI/CD:** see [section 7](#7-cicd-optional).
 
 **Incoming bugs and requests** from others: `/triage`.
 
@@ -264,14 +244,32 @@ Facts (maps, API and data docs) are fixed directly. Decisions are drafted as `pr
 | Run a skill | `/to-spec` | Skills menu, or "run the to-spec skill" | n/a |
 | Use a role | "use the sdet agent to ..." | "act as the sdet agent" | n/a |
 | See the board | `/cli status` or "show the board" | "show the board" | `engr status` |
-| See what exists | `/discover skills` | "run the discover skill for roles" | `engr --help-discover-skillset` |
+| See what exists | `/cli discover skills` | "run the discover skill for roles" | `engr --help-discover-skillset` |
 | Unsure what's next | `/next` | "run the next skill" | `engr status` |
 
 Everything is stored in files, so you can switch tools mid-feature: write the spec in Claude Code, implement in Codex. The ticket's progress log tells the next agent where things stand.
 
 ---
 
-## 7. Unattended loop
+## 7. CI/CD (optional)
+
+**Easiest:** run `/setup-pipeline` in your AI tool. It asks what each branch should run (for example: feature → develop only tests; develop → main tests, build, tag and npm) and writes the YAML for you.
+
+**Quick defaults:** answer question 6 during install, or any time later:
+
+```bash
+engr pipeline --mode test --write                                  # tests on every PR and push to develop
+engr pipeline --mode release --release-targets release,npm --write   # also release on merge to main
+engr pipeline --provider gitlab --mode release --write              # GitLab CI instead of GitHub Actions
+engr pipeline --dev-branch none --write                              # feature → main, no develop branch
+engr pipeline --mode none --write                                    # switch it off (removes the generated workflows)
+```
+
+It writes `.github/workflows/engr-checks.yml` and `engr-release.yml` (GitHub) or `.gitlab-ci.yml` (GitLab). A PR (GitLab: merge request) runs checks before code lands; a merge is the code landing, where releases run. Every PR runs install, test, build, `validate`, `sync --check` and the commit ticket check. A merge to main releases `v<version>` only when that tag doesn't exist yet. Details: `.agents/workflows/release.md`, or run `/setup-pipeline` and the agent walks you through it.
+
+---
+
+## 8. Unattended loop
 
 Let an agent work through ready tickets while you are away, with brakes:
 
@@ -284,17 +282,15 @@ For each ready ticket it claims it, runs the agent on `/implement`, then runs yo
 
 ---
 
-## 8. Customising
+## 9. Customising
 
 - **Change a skill or role:** edit it in `.agents/`, then `engr sync`. Never edit the copies in `.claude/`, `.cursor/` and so on.
 - **Keep your own version of a generated file:** delete its `Generated by engr-toolbox` line. Sync and upgrades will leave it alone.
-- **Upgrade the toolbox:** `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox init --yes`. Your saved choices are reused and project-owned files are never overwritten.
-- **Change size, tools or scope:** run `init` again with `--size`, `--tools` or `--scope`.
-- **Remove a global install:** `engr uninstall --scope global` (only files the toolbox wrote).
+- **Upgrade, change size, tools or scope, uninstall:** see [Getting started](getting-started.md#4-upgrade-change-remove).
 
 ---
 
-## 9. FAQ
+## 10. FAQ
 
 **Do I have to use every skill?**
 No. Small changes can go straight to `/implement`. The gates only check what matters: tickets, evidence, tests.

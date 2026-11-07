@@ -22,7 +22,7 @@ Read `docs/agents/issue-tracker.md` first. It names the tracker:
 ```markdown
 # NN: <Title>
 
-**Type:** design | dev | automation | review | qa | doc-drift | bug
+**Type:** design | dev | automation | review | qa | doc-drift | bug | release
 **Status:** <state>
 **Blocked by:** None | NN, NN
 **Owner:** <name>
@@ -75,7 +75,7 @@ Number every criterion `AC1`, `AC2`, ... and never renumber. Tests and manual ca
 
 ## Who owns which type
 
-design → architect · dev, bug → builder · automation → sdet · qa → qa · review → reviewer · doc-drift → builder
+design → architect · dev, bug → builder · automation → sdet · qa → qa · review → reviewer · doc-drift → builder · release → whoever cuts it (`/cut-release`)
 
 ## Rules
 

@@ -54,6 +54,6 @@ Use when:
 Procedure:
 1. Inspect current release conventions, versioning scheme, tags, artifacts, and approval gates.
 2. Identify changes in scope, migration needs, config updates, and verification requirements for the release.
-3. Use `release-check` to confirm merge and release readiness before promotion.
+3. Use `cut-release` to confirm merge and release readiness before promotion.
 4. Sequence rollout steps, feature flags, migrations, and rollback options where applicable.
 5. Coordinate changelog and operator documentation updates before or during release.

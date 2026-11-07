@@ -6,7 +6,7 @@ Every step works on a ticket. Every ticket closes with evidence.
 (existing repo) adopt-project ─┐
 (team docs)     ingest ────────┤
                                ▼
-grill-with-docs → design* → to-spec → test-plan† → to-tickets → implement (per ticket) → release-check → pr → retro
+grill-with-docs → design* → to-spec → test-plan† → to-tickets → implement (per ticket) → cut-release → retro
                                                    │  tdd → checks → code-review → update-docs → evidence
                                                    └─ or implement-spec / loop for many tickets
 * design only when the team needs ERD, flows or API design before code
@@ -21,7 +21,7 @@ grill-with-docs → design* → to-spec → test-plan† → to-tickets → impl
 | Tickets | `to-tickets` | Every ticket has type, acceptance criteria, blockers |
 | Build | `implement` | `gate implement --ticket <id>`: ready, unblocked, has criteria |
 | Close ticket | `update-docs` | Evidence filled; `validate` passes |
-| Release | `release-check` | `gate release --feature <f>`: all tickets done with evidence; CI green |
+| Release | `cut-release` | `gate release --feature <f>`: all tickets done with evidence; CI green |
 | Learn | `retro` | Accepted improvements become tickets |
 
 ## Context hygiene

@@ -9,9 +9,9 @@ test-strategy (once, sdet)
 grill-with-docs (qa/sdet ask "how do we test this?") → to-spec (seams) → test-plan → to-tickets
    → dev tickets (builder: tdd, names tests with criterion IDs)
    → automation tickets (sdet: automate-tests, blocked by dev)
-   → qa tickets (qa: create/execute-manual-test-cases, blocked by dev)
+   → qa tickets (qa: manual-testing, blocked by dev)
    → failures → report-bug → builder fixes → re-run
-→ test-report (go/no-go) → gate release → release-check
+→ test-report (go/no-go) → gate release → cut-release
 ```
 
 | Step | Owner | Output | Check |

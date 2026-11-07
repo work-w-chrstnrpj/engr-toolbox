@@ -1,7 +1,0 @@
-# Release Readiness
-
-1. `gate release --feature <feature>`: every ticket `done` or `wontfix`, evidence present.
-2. `release-check`: verification commands, drift and validate, changelog, secrets scan, one-way doors and rollback plan.
-3. `pr`: body with tickets closed, evidence, merge danger.
-4. Human approval and merge. Deploy only with explicit approval.
-5. `retro`.

@@ -21,10 +21,10 @@
 
 ## How We Work
 
-All work happens on a ticket and every ticket ends with evidence. Start with `/next` if unsure; see everything available with `/discover`; run any workflow command with `/cli` (terminal: `engr <command>` or `node .ai/cli/bin/cli.mjs <command>`).
+All work happens on a ticket and every ticket ends with evidence. Start with `/next` if unsure; see everything available with `/cli discover`; run any workflow command with `/cli` (terminal: `engr <command>` or `node .ai/cli/bin/cli.mjs <command>`).
 
 ```text
-grill-with-docs → design (if needed) → to-spec → to-tickets → implement (per ticket) → release-check → pr → retro
+grill-with-docs → design (if needed) → to-spec → to-tickets → implement (per ticket) → cut-release → retro
 ```
 
 - Existing repo, first time: `/adopt-project`. Team handed you documents: `/ingest`.

@@ -152,7 +152,7 @@ Procedure:
 2. Request or review status reports from responsible specialist roles; do not infer completion from code presence alone.
 3. Check blockers, open defects, missing docs, unreviewed security concerns, and operational readiness items.
 4. Record ready, ready with accepted risk, or not ready with explicit gaps and owners.
-5. Use `release-check` when merge or release verification is part of milestone closure.
+5. Use `cut-release` when merge or release verification is part of milestone closure.
 
 Guardrails:
 - Do not mark a milestone complete without verification or a responsible role status report.

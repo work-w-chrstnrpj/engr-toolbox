@@ -37,7 +37,7 @@ Procedure:
 2. Write atomic cases with clear steps, expected results, and pass/fail criteria.
 3. Include negative, boundary, permission, empty, error, and recovery scenarios where relevant.
 4. Note environment assumptions, blockers, and evidence to capture such as screenshots or logs.
-5. Use `create-manual-test-cases` when a formal skill workflow is appropriate; otherwise deliver the case set directly.
+5. Use `manual-testing` when a formal skill workflow is appropriate; otherwise deliver the case set directly.
 
 Guardrails:
 - Do not write vague steps such as "verify it works" without observable expected results.
@@ -60,7 +60,7 @@ Procedure:
 2. Execute cases in priority order; record pass, fail, blocked, or not-run with evidence for each result.
 3. For failures, capture reproduction steps, actual versus expected behavior, severity, and impact.
 4. Log blocked or not-run cases with reason and required follow-up.
-5. Use `execute-manual-test-cases` when formal execution reporting is required; summarize outcomes for planning and engineering handoffs.
+5. Use `manual-testing` when formal execution reporting is required; summarize outcomes for planning and engineering handoffs.
 
 Guardrails:
 - Do not report pass when execution was incomplete or evidence is missing for critical checks.

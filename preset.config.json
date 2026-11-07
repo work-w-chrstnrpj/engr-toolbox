@@ -1,7 +1,7 @@
 {
   "$schema": "./preset.schema.json",
   "name": "engr-toolbox",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "defaultTier": "medium",
   "providers": [
     "claude",
@@ -39,23 +39,19 @@
         "adopt-project",
         "domain-modeling",
         "handoff",
-        "wait-what",
         "mentor",
         "coach",
-        "sync-ai-adapters",
         "prototype",
         "codebase-design",
-        "discover",
         "cli",
         "setup-pipeline",
         "cut-release",
-        "release-check",
         "pr",
         "report-bug"
       ],
       "workflows": [
         "main-flow",
-        "branching-and-release"
+        "release"
       ],
       "tools": [
         "adapter-generation-policy",
@@ -95,8 +91,7 @@
         "triage",
         "retro",
         "to-questionnaire",
-        "create-manual-test-cases",
-        "execute-manual-test-cases",
+        "manual-testing",
         "generate-rca",
         "use-context-tools",
         "test-strategy",
@@ -109,7 +104,6 @@
         "design-first",
         "team-sync",
         "investigation-to-rca",
-        "release-readiness",
         "quality"
       ],
       "tools": [
