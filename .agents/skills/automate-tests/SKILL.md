@@ -1,0 +1,30 @@
+---
+name: automate-tests
+description: Write framework-level automated tests (UI, API, contract, integration) for an automation ticket, traced to acceptance criteria. Use when building or extending an automation suite, page objects, API clients, fixtures, or CI test stages.
+---
+
+# Automate Tests
+
+Different from `tdd`: `tdd` drives new code from the inside; this builds and extends the automation suite from the outside, usually after or alongside the dev ticket.
+
+## Steps
+
+1. Work on an `automation` ticket (call the Skill tool with `tickets`). Run `node .ai/cli/bin/cli.mjs gate implement --ticket <id>` and claim it.
+2. Read `qa/strategy.md`, `qa/plans/<feature>.md`, the dev ticket's acceptance criteria, `.ai/maps/testing-map.md`, and existing tests to match their patterns.
+3. For each criterion in scope pick the lowest pyramid level that proves it. Reuse page objects, API clients and fixtures; add new ones in the same style.
+4. Write each test so that:
+   - its name starts with the criterion ID: `cart/01#AC1 user can add an item`,
+   - it creates its own data and cleans up,
+   - it waits on conditions, never sleeps,
+   - it uses `data-testid` or accessible roles, never layout selectors,
+   - it asserts user-visible outcomes or the API contract.
+5. Run the new tests 3 times locally; any inconsistency is a flake to fix before merging. Run the full relevant suite once.
+6. Make sure CI emits JUnit XML, then record results: `node .ai/cli/bin/cli.mjs test-report --junit <file> --ticket <id> --feature <feature> --write`.
+7. Run `node .ai/cli/bin/cli.mjs trace --feature <feature>` and confirm the criteria are now covered.
+8. Call the Skill tool with `code-review`, then `update-docs` (testing map and `docs/testing/`). Fill the Evidence and set `in-review`.
+
+## Boundaries
+
+- Do not edit production code beyond test seams without a dev ticket.
+- Never weaken an assertion or delete a test to go green. Quarantine with `fix-flaky-tests`.
+- See `.agents/roles/playbooks/sdet/sdet.md` for framework patterns.

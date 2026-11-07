@@ -1,0 +1,20 @@
+---
+name: diagnosing-bugs
+description: Disciplined diagnosis loop for hard bugs, flaky tests, incidents and performance regressions. Use when something is broken and the cause is not obvious, or when asked to investigate why an issue occurred.
+---
+
+# Diagnosing Bugs
+
+Do not theorise before you have a feedback loop.
+
+## Phases (finish each before the next)
+
+1. **Ticket.** Make sure a `bug` ticket exists (call the Skill tool with `tickets`). Log every phase in it.
+2. **Feedback loop.** Build one command that goes red on *this* bug: a failing test, a script, a curl, a reproduction. If a human must do a step, write it down for them. No loop, no theories.
+3. **Minimise.** Shrink the input, the code path and the environment until the loop is fast and the failure is small.
+4. **Hypothesise.** List candidate causes ranked by likelihood and cost to check. Predict what each would show.
+5. **Instrument.** Add logging, breakpoints or bisect (`git bisect run <loop>` between known good and bad) to confirm or kill hypotheses one at a time.
+6. **Fix.** Fix the root cause, not the symptom. Turn the feedback loop into a permanent regression test.
+7. **Report.** In the ticket: root cause, confidence, evidence, fix commit, regression test. For an incident, hand this to `generate-rca`.
+
+Afterwards suggest `/retro`: what check would have caught this earlier?

@@ -1,130 +1,187 @@
-# AI Project Structure Template
+<div align="center">
 
-_Token-efficient, portable AI agent architecture and preset generator for modern software development._
+# 🧰 engr-toolbox
 
-A standardized AI development framework designed to work seamlessly across **Cursor**, **Antigravity**, **Claude Code**, **Codex**, and **OpenCode**. It provides canonical role definitions, reusable workflow skills, on-demand capability playbooks, and automated adapter generation so AI agents can collaborate consistently across any tool without wasting tokens.
+**A ticket-driven engineering workflow for AI coding agents.**
+Skills, roles, a project structure, and a CLI that keeps the agent honest.
+
+![License: MIT](https://img.shields.io/badge/license-MIT-blue)
+![Node 18+](https://img.shields.io/badge/node-%3E%3D18-green)
+![Zero dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+![AI tools: 11](https://img.shields.io/badge/AI%20tools-11-purple)
+
+```bash
+npx github:work-w-chrstnrpj/engr-toolbox
+```
+
+</div>
 
 ---
 
-## Key Features
+## What it is
 
-1. **Portable AI Layer (`.agents/`)**: One canonical source of truth for roles, skills, overlays, workflows, and tool policies.
-2. **5 Major Provider Presets**:
-   - **Cursor**: Scoped `.cursor/rules/*.mdc` (no context-bloating wildcards) and `.cursor/skills/`.
-   - **Antigravity**: Direct canonical integration via `AGENTS.md` and `.agents/skills/`.
-   - **Claude Code**: Tailored `.claude/agents/*.md`, `CLAUDE.md`, and `.claude/skills/`.
-   - **Codex**: Compact `.codex/agents/*.toml` agent definitions for Codex agentic development.
-   - **OpenCode**: Subagents in `.opencode/agents/*.md`, skills, and non-destructive `opencode.json` configuration merging.
-3. **Capability Profiles**:
-   - `fullstack`: Software Engineer, Frontend, Backend, System Architect, SQA, Docs.
-   - `general`: General Software Engineer + System Architect with core planning/coding/review skills.
-   - `qa`: SQA Engineer + test authoring, manual/automated execution, investigation, and RCA.
-   - `architecture`: System Architect + Security Engineer for boundaries, dataflow, and planning.
-   - `docs`: Technical Documentation Specialist + documentation update workflows.
-   - `all`: Full suite of 9 roles, 13+ skills, overlays, and SDLC workflows.
-4. **Token-Efficient Design**:
-   - Decomposes monolithic roles into compact core prompts (~70 lines) with on-demand reference playbooks (`.agents/roles/playbooks/`).
-   - Removes greedy `globs: '**/*'` from on-demand Cursor rules to prevent context saturation.
-   - Built-in token measurement utility (`create-preset measure`).
-5. **Context Validation & Safe Sync**:
-   - Normalized `docs/` paths with explicit status tracking (`[NOT_STARTED | IN_PROGRESS | COMPLETE | NOT_APPLICABLE]`).
-   - Context linter that warns on missing info and blocks only when a specific requested task requires that context.
-   - Non-destructive sync that preserves user customizations and configs.
+engr-toolbox is **four things that work together**:
 
----
+| | Part | What it gives you | Where it lives |
+|---|---|---|---|
+| 🧠 | **Skillset** | 43 reusable steps the agent runs: brainstorm, design, spec, tickets, build test-first, review, test, release | `.agents/skills/` |
+| 🔁 | **Workflow** | The order of those steps, from idea to release, with a gate before each phase | `.agents/workflows/` |
+| 🗂️ | **Structure** | Fixed places for context: glossary, decisions, team documents, designs, maps, tests, tickets | `docs/`, `qa/`, `tickets/`, `.ai/` |
+| 👥 | **Roles** | Five owners, one per kind of ticket: architect, builder, reviewer, QA, SDET | `.agents/roles/` |
 
-## Quick Start
+Plus a **zero-dependency CLI** that checks the rules instead of hoping the agent follows them.
 
-### 1. Prerequisites
-- **Node.js 18+** (zero third-party npm dependencies required).
+> **The one rule:** no work without a ticket, and every ticket ends with evidence.
 
-### 2. Generate a Preset for Your Preferred Tool
-Run the preset generator directly:
+## Why: engineering, not vibe coding
 
-```bash
-# Generate fullstack preset for Cursor into the current directory
-node bin/create-preset.mjs cursor --profile fullstack
-
-# Generate QA preset for Claude Code
-node bin/create-preset.mjs claude --profile qa
-
-# Generate Codex preset into another project directory
-node bin/create-preset.mjs codex --profile all --into ../my-new-project
-
-# Dry run preview
-node bin/create-preset.mjs opencode --profile fullstack --dry-run
-```
-
-### 3. Sync Adapters
-When you update canonical roles, skills, or workflows in `.agents/`, refresh all tool adapters:
-
-```bash
-node bin/create-preset.mjs sync --target all
-# or via npm script:
-npm run sync
-```
-
-### 4. Validate Template & Context
-Check that all roles, skills, routing paths, and required documentation fields are valid:
-
-```bash
-node bin/create-preset.mjs validate
-# or check if context is ready for a specific task:
-node bin/create-preset.mjs validate --task database
-```
-
-### 5. Measure Token Consumption
-Inspect startup token overhead and verify token savings across providers and profiles:
-
-```bash
-node bin/create-preset.mjs measure
-```
-
----
-
-## Repository Structure
-
-| Directory | Purpose |
+| What goes wrong with AI agents | What engr-toolbox does |
 |---|---|
-| `bin/` | Native Node.js CLI executable (`create-preset` / `ai-preset`) |
-| `lib/` | Preset generators, profile definitions, validator, and token measurement engine |
-| `docs/` | Canonical project intent, architecture, data model, API spec, testing, and deployment |
-| `.agents/` | Canonical AI roles, skills, overlays, playbooks, workflows, and tool policies |
-| `.ai/` | Context routing, discovery maps, and prompt recipes |
-| `application/` | User-facing client, frontend, command surface, or primary runtime |
-| `service/` | Backend service, API, worker, job, or integration layer |
-| `shared/` | Shared contracts, types, schemas, utilities, or constants |
-| `tests/` | Cross-cutting manual, automated, and template regression tests |
+| The agent builds the wrong thing | `grill-with-docs` interviews you until every decision is made |
+| It invents words and forgets decisions | `GLOSSARY.md` for shared language, ADRs for decisions |
+| The code doesn't actually work | Test-first at agreed seams, verification commands, two-axis code review |
+| Nobody can prove what was done | Tickets with a progress log and evidence; `done` without evidence fails |
+| The team handed you a TDD and an API spec | Read-only `docs/inputs/`, `/ingest`, design-first tickets with ERD and flows |
+| Teammates change code and the docs rot | `drift` finds what changed, `update-docs` fixes facts and flags decisions |
+| Quality is judged by feel | Acceptance-criteria IDs, traceability, JUnit reports, flaky tracking |
+| Automation runs away | Gates, a required verify command, retry caps, hand-off to a human |
 
----
+## How it works
 
-## Canonical AI Roles
+```mermaid
+flowchart LR
+  A[adopt-project / ingest] --> B[grill-with-docs]
+  B --> C[design]
+  C --> D[to-spec]
+  D --> E[test-plan]
+  E --> F[to-tickets]
+  F --> G[implement<br/>builder]
+  F --> H[automate-tests<br/>sdet]
+  F --> I[manual testing<br/>qa]
+  G --> J[code-review<br/>reviewer]
+  H --> K[test-report]
+  I --> K
+  J --> K
+  K --> L[release-check]
+  L --> M[pr]
+  M --> N[retro]
+```
 
-- **Software Engineer**: General coding, fullstack implementation, end-to-end features, refactoring, and integration.
-- **System Architect**: Architecture, module boundaries, dataflow, and technical risk.
-- **Product & Planning Manager**: Requirements, acceptance criteria, task breakdown, dependencies, and coordination.
-- **Frontend UI/UX Developer**: UI, styling, client state, routing, accessibility, and client tests.
-- **Backend & Database Engineer**: APIs, services, persistence, schema migrations, batch jobs, and integrations.
-- **DevOps Engineer**: CI/CD, deployment targets, containers, monitoring, runtime config, and releases.
-- **Security Engineer**: Auth, authorization, secrets, dependency risk, input sanitization, and sensitive flows.
-- **SQA Engineer**: Test plans, manual test cases, automated tests, regressions, and bug reports.
-- **Technical Documentation Specialist**: README, API documentation, setup, onboarding, operations, and changelogs.
+Every box is a skill. Every arrow passes through a ticket. Lost at any point? Run **`/next`**.
 
----
+## Quick start
 
-## Documentation & Context Workflow
+**1. Install** in your project folder (Node 18+):
 
-1. Start with `AGENTS.md` to define project goal, tech stack, and verification commands.
-2. Fill core intent in `docs/tdd/tdd.md` and `docs/project-structure/project-structure.md`.
-3. Track document readiness with status headers:
-   - `Status: NOT_STARTED`
-   - `Status: IN_PROGRESS`
-   - `Status: COMPLETE`
-   - `Status: NOT_APPLICABLE`
-4. Use `.ai/context-routing.md` and `.ai/maps/` for compact discovery before inspecting source files.
+```bash
+npx github:work-w-chrstnrpj/engr-toolbox
+```
 
----
+It asks five questions: new or existing project, size, which AI tools, where tickets live, and whether skills go in the project or globally.
+
+**2. Onboard** in your AI tool (Claude Code, Codex, Cursor, ...):
+
+| Your situation | Run |
+|---|---|
+| Existing codebase | `/adopt-project` |
+| The team gave you documents | `/ingest` |
+| New project | Fill in `AGENTS.md`, then `/grill-with-docs` |
+
+**3. Work** one ticket at a time: `/implement cart/01`. Check progress with `/cli status`.
+
+📖 Full walkthrough: **[docs/guide.md](docs/guide.md)**
+
+## Pick a size
+
+| Size | For | You get |
+|---|---|---|
+| **small** | Solo or small project | Ticket workflow, test-first build, review, glossary, ADRs, builder and reviewer |
+| **medium** | Team project | + team inputs, design-first, QA and SDET layer, triage, release checks, reference docs, context maps |
+| **large** | Big codebase or many teams | + parallel builds, wayfinding for foggy efforts, architecture surveys, deployment docs, heavy context tools |
+
+## Roles
+
+| Role | Owns | Access |
+|---|---|---|
+| 🏛️ **architect** | Design tickets: ERD, flows, API design, ADRs, specs, tickets | read-write |
+| 🔨 **builder** | Dev and bug tickets: test-first implementation, docs, evidence | read-write |
+| 🔍 **reviewer** | Review tickets: standards, spec, security | **read-only** |
+| 🧪 **qa** | Manual, exploratory, UAT and regression testing; bug reports | read-write |
+| 🤖 **sdet** | Test strategy, automation, CI tests, flaky tests, traceability, go/no-go | read-write |
+
+## Skills at a glance
+
+| Phase | Skills |
+|---|---|
+| Start | `adopt-project`, `ingest`, `next`, `discover`, `cli` |
+| Think | `grill-with-docs`, `grilling`, `design`, `prototype`, `wayfinder`, `domain-modeling`, `codebase-design` |
+| Plan | `to-spec`, `test-strategy`, `test-plan`, `to-tickets`, `triage` |
+| Build | `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `update-docs` |
+| Test | `automate-tests`, `create-manual-test-cases`, `execute-manual-test-cases`, `report-bug`, `fix-flaky-tests`, `test-report` |
+| Ship | `code-review`, `release-check`, `pr`, `retro`, `generate-rca` |
+| Helpers | `mentor`, `coach`, `wait-what`, `handoff`, `to-questionnaire`, `ask-repo-question`, ... |
+
+See them all, with descriptions: `/discover skills` in your agent, or `engr --help-discover-skillset` in the terminal.
+
+## The structure it installs
+
+```text
+your-project/
+├── AGENTS.md              ← goal, stack, verification commands, how we work (read first)
+├── GLOSSARY.md            ← the project's words
+├── docs/
+│   ├── architecture.md    ← one-page architecture
+│   ├── adr/               ← decisions and why (never rewritten, only superseded)
+│   ├── inputs/            ← documents from your team, read-only
+│   ├── design/            ← ERD, flows, API changes
+│   └── api/ database/ testing/ deployment/   ← the system as it is now
+├── qa/                    ← test strategy, plans, cases, runs, traceability, flaky list
+├── tickets/
+│   ├── BOARD.md           ← generated board
+│   └── <feature>/         ← spec.md + one file per ticket
+├── .ai/
+│   ├── maps/              ← where things are in the code
+│   └── cli/               ← the workflow CLI, pinned to this project
+└── .agents/               ← skills, roles, workflows, policies (or installed globally)
+```
+
+## Commands
+
+In Claude Code or Codex you never need to type these. Use `/cli status` or just ask: *"is cart ready to ship?"*
+
+| Command | What it does |
+|---|---|
+| `engr status` | Ticket board: ready, in progress, blocked, done |
+| `engr gate release --feature cart` | Is it ready to ship? Blocks on open tickets, missing evidence, untested criteria, open S1/S2 bugs |
+| `engr trace --feature cart` | Which acceptance criteria have tests or manual cases |
+| `engr test-report --junit results/ --write` | Record test results, track flaky tests, update ticket evidence |
+| `engr drift` | What teammates changed since your last sync |
+| `engr validate` | Tickets, ADRs, map paths, skills: all consistent? |
+| `engr --help-discover` | Everything installed: skills, roles, workflows, docs, structure |
+
+`engr` is the short command (`npm install -g github:work-w-chrstnrpj/engr-toolbox`, once). Without it: `node .ai/cli/bin/cli.mjs <command>`.
+
+## Works with
+
+Claude Code · Codex · Cursor · GitHub Copilot · OpenCode · Windsurf · Cline · Kilo Code · Aider · Antigravity · OpenHands
+
+One source in `.agents/` generates each tool's own files. Install the skills **in the project** (the whole team gets them, best for teams) or **globally** (once per machine, shared across your projects).
+
+## Docs
+
+| | |
+|---|---|
+| 📖 [Guide](docs/guide.md) | Step-by-step: from install to release, for every role |
+| 🚀 [Getting started](docs/getting-started.md) | Install options, sizes, project vs global |
+| 🔁 [Workflow](docs/workflow.md) | Which skill when, gates, where context lives |
+| ⌨️ [Commands](docs/commands/commands.md) | Every command and option |
+| 🏗️ [Architecture](docs/architecture.md) | How the toolbox is built |
+| 🧾 [Decisions](docs/adr/) | Why it works this way |
+
+## Credits
+
+Many workflow skills are adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT): grilling, specs, tracer-bullet tickets, TDD at seams, two-axis review and more. engr-toolbox adds tickets with evidence, team inputs, design-first work, the QA and SDET layer, enforcement gates, size tiers and multi-tool support. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## License
 
-MIT — see `LICENSE`.
+MIT

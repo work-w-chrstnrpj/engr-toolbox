@@ -7,26 +7,32 @@ on:
     branches: [main]
 
 jobs:
-  validate-and-test:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [18.x, 20.x, 22.x]
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-
-      - name: Run automated test suite
+      - name: Tests
         run: npm test
+      - name: Validate structure, tickets, ADRs and map paths
+        run: node bin/cli.mjs validate
+      - name: Adapters are up to date
+        run: node bin/cli.mjs sync --check
 
-      - name: Validate AI project structure and context
-        run: node bin/create-preset.mjs validate
-
-      - name: Benchmark token budgets
-        run: node bin/create-preset.mjs measure
+  tickets:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+      - name: Every commit references a ticket
+        run: node bin/cli.mjs check-commits --range "origin/${{ github.base_ref }}..HEAD"

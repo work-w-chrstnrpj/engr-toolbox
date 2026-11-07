@@ -1,0 +1,24 @@
+---
+name: ingest
+description: Bring a document from someone else (TDD, API spec, PRD, ERD, meeting notes, answered questionnaire) into docs/inputs/, record its version, and extract terms, decisions, and open questions.
+disable-model-invocation: true
+---
+
+# Ingest
+
+Team documents are **inputs: read-only, never edited**. Your work links to them.
+
+## Steps
+
+1. Save the file under `docs/inputs/` (keep the original format). If it is a link (Confluence, Google Docs), record the link instead of copying.
+2. Add or update its row in `docs/inputs/INDEX.md`: file, title, owner, version or date, source, ingested on, notes.
+3. **If this is a new version of a known input:** diff it against the previous version and list what changed. Keep the old version (rename with its version suffix).
+4. Extract, citing section numbers:
+   - **Terms** → call the Skill tool with `domain-modeling` and update `GLOSSARY.md` with `_Source_` lines.
+   - **Decisions already made** → ADRs with `Status: accepted (from input)` and a link to the input.
+   - **Contradictions** with existing ADRs, designs or code → list them; never silently pick one.
+   - **Open questions** → suggest `/to-questionnaire` for the owner.
+5. For a changed input, list every design doc, spec and ticket that relied on the old version (search their `Inputs` sections) and create a `doc-drift` ticket to update them.
+6. Report in five lines or fewer: what was ingested, what changed, what needs a decision.
+
+When an input and our design disagree, the input is the stated intent. Disagreeing needs an ADR approved by the input's owner.

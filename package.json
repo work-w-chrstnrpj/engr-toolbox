@@ -1,34 +1,49 @@
 {
-  "name": "ai-project-structure-template",
-  "version": "1.0.0",
-  "description": "Token-efficient, portable AI agent architecture and preset generator for Cursor, Antigravity, Claude Code, Codex, and OpenCode",
+  "name": "engr-toolbox",
+  "version": "3.0.0",
+  "description": "Ticket-driven engineering workflow for AI coding agents: owned skills, four roles, size tiers, an npx installer, adapters for 11 tools, and CLI gates.",
   "type": "module",
   "main": "./lib/index.mjs",
   "bin": {
-    "create-preset": "./bin/create-preset.mjs",
-    "ai-preset": "./bin/create-preset.mjs"
+    "engr-toolbox": "./bin/cli.mjs",
+    "engr": "./bin/cli.mjs"
   },
+  "files": [
+    "bin",
+    "lib",
+    ".agents",
+    "template",
+    "preset.config.json",
+    "README.md",
+    "LICENSE",
+    "THIRD_PARTY_NOTICES.md"
+  ],
   "scripts": {
-    "create-preset": "node ./bin/create-preset.mjs",
-    "sync": "node ./bin/create-preset.mjs sync",
-    "validate": "node ./bin/create-preset.mjs validate",
-    "measure": "node ./bin/create-preset.mjs measure",
-    "test": "node --test"
+    "test": "node --test",
+    "validate": "node bin/cli.mjs validate",
+    "sync": "node bin/cli.mjs sync --clean",
+    "status": "node bin/cli.mjs status --write",
+    "measure": "node bin/cli.mjs measure"
   },
   "engines": {
     "node": ">=18.0.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/work-w-chrstnrpj/engr-toolbox.git"
+  },
   "keywords": [
     "ai",
     "agents",
-    "cursor",
+    "workflow",
+    "tickets",
     "claude-code",
+    "cursor",
     "codex",
     "opencode",
-    "antigravity",
-    "presets",
-    "prompts"
+    "copilot",
+    "skills"
   ],
-  "author": "",
+  "author": "work-w-chrstnrpj",
   "license": "MIT"
 }

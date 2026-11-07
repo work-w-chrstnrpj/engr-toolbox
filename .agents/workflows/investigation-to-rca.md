@@ -1,20 +1,6 @@
 # Investigation to RCA
 
-Multi-role workflow from diagnosis to formal reporting.
-
-## Flow
-
-```text
-investigate-issue -> evidence review -> generate-rca only after findings exist -> docs/handoff
-```
-
-## Roles
-
-- **Primary investigator**: `investigate-issue` for evidence and hypotheses.
-- **Technical Documentation Specialist**: `generate-rca` when formal deliverable is needed.
-- **Owning engineers**: implement fixes separately via bugfix delivery.
-
-## Notes
-
-- `investigate-issue` diagnoses; it does not write formal RCA.
-- `generate-rca` formats completed findings into a report.
+1. Open a `bug` ticket (or use the incident ticket).
+2. `diagnosing-bugs`: feedback loop, minimise, hypothesise, instrument, fix, regression test. Log each phase in the ticket.
+3. `generate-rca` turns the finished ticket and evidence into the RCA document. It never investigates or invents a root cause.
+4. `retro`: what check would have caught it? Accepted items become tickets.

@@ -1,0 +1,28 @@
+---
+name: to-tickets
+description: Break a spec, design, or plan into thin end-to-end tickets with blocking edges, and publish them to the configured tracker.
+disable-model-invocation: true
+---
+
+# To Tickets
+
+## Steps
+
+1. Read the spec, design or conversation. If given a path or issue, read all of it.
+2. Explore the code. Look for **prefactoring**: make the change easy, then make the easy change.
+3. Draft **thin vertical slices**:
+   - Each slice cuts through every layer it needs (schema, API, UI, tests) for one narrow behaviour.
+   - Each is demoable or verifiable on its own.
+   - Each fits one fresh agent session.
+   - Prefactoring comes first.
+   - Give each slice a **type**: `design`, `dev`, `automation`, `review`, `qa`.
+   - Number acceptance criteria `AC1`, `AC2`, ... (see the `tickets` skill).
+   - If `qa/plans/<feature>.md` exists, create the `automation` and `qa` tickets it lists, each blocked by the dev tickets it tests.
+   - Design tickets block the dev tickets that depend on them.
+   - Give each its **blockers**: the tickets that must be done first.
+4. **Wide refactors** (one mechanical change across many files) are the exception: sequence them as expand, migrate in batches, contract. Each batch is a ticket blocked by the expand; the contract is blocked by every batch.
+5. Show the breakdown as a numbered list (title, type, blocked by, what it delivers). Ask: is the size right, are the blockers right, should any merge or split? Iterate until approved.
+6. Publish. Call the Skill tool with `tickets` for the exact format and tracker rules. Number blockers first. Set status `ready-for-agent` unless a human must do it (`ready-for-human`).
+7. Run `node .ai/cli/bin/cli.mjs status --write` to refresh the board, then tell the user the next step: `/implement <ticket>` per ticket in a fresh session, or `/implement-spec` for the whole set, or `node .ai/cli/bin/cli.mjs loop` to run unattended.
+
+No file paths or code in tickets; they go stale.

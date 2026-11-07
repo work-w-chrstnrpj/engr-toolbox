@@ -1,0 +1,18 @@
+---
+name: fix-flaky-tests
+description: Find, quarantine, and fix flaky tests (tests that pass and fail on the same code). Use when CI is unreliable, a test fails intermittently, or qa/flaky.md lists tests.
+---
+
+# Fix Flaky Tests
+
+## Steps
+
+1. Read `qa/flaky.md` (written by `test-report` from run history) or the failing CI runs the user points to.
+2. For each flaky test:
+   1. **Ticket:** one `automation` ticket per root cause (call the Skill tool with `tickets`).
+   2. **Quarantine** if it blocks others: skip it with the ticket ID in the skip reason. Never delete it.
+   3. **Reproduce:** run it in a loop (for example 20 times), with and without parallelism, in random order if the runner supports it.
+   4. **Diagnose:** call the Skill tool with `diagnosing-bugs`. Check the usual causes: fixed sleeps, animations, shared or leaked state, order dependence, real network or clock, unstable selectors, test data collisions, resource limits in CI.
+   5. **Fix** the cause, not the symptom. Adding retries or longer timeouts is not a fix.
+   6. **Prove:** 20 consecutive passes locally, then remove the quarantine.
+3. Record the run results with `node .ai/cli/bin/cli.mjs test-report --junit <file> --ticket <id> --write`, fill the Evidence, and suggest `/retro` if the cause could be caught by a lint rule or helper.

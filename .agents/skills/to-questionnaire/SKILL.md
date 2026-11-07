@@ -1,0 +1,18 @@
+---
+name: to-questionnaire
+description: Turn a decision you cannot make alone into a short questionnaire for the person who can, such as the author of a team document.
+disable-model-invocation: true
+---
+
+# To Questionnaire
+
+## Steps
+
+1. Grill the user about the send, not the subject: who is it for, what do we need back, by when, and what do they already know?
+2. Read the related inputs (`docs/inputs/`), spec and ticket so the questions target the real gap.
+3. Write `docs/inputs/questions/<topic>-<date>.md`:
+   - One line of context.
+   - Numbered questions, each answerable in a line, multiple choice where possible, with the option we lean towards.
+   - A space for answers.
+4. Link it from the ticket and set the ticket to `needs-info`.
+5. When answers come back, run `/ingest` on the filled file.

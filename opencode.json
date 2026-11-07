@@ -3,9 +3,6 @@
   "instructions": [
     "AGENTS.md",
     ".agents/README.md",
-    ".agents/overlays/README.md",
-    ".agents/tools/context-policy.md",
-    ".agents/tools/verification-policy.md",
-    ".agents/tools/adapter-generation-policy.md"
+    ".ai/context-routing.md"
   ]
 }
