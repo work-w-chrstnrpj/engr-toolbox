@@ -1,8 +1,0 @@
-{
-  "version": "3.0.0",
-  "size": "large",
-  "mode": "existing",
-  "tracker": "local",
-  "tools": ["claude", "cursor", "codex", "opencode", "antigravity", "copilot", "windsurf", "cline", "kilo", "aider", "openhands"],
-  "checks": "npm test"
-}

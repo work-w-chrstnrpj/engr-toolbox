@@ -31,6 +31,8 @@ Read `tickets/BOARD.md` (or run `node .ai/cli/bin/cli.mjs status`), then answer 
 | CI is flaky | `fix-flaky-tests` |
 | Feature ready to ship | `test-report` |
 | All tickets of a feature done | `release-check`, then `pr`, then `/retro` |
+| Ready to ship a version | `/cut-release` |
+| Want tests on PRs or releases on merge | `/setup-pipeline` |
 
 ## Side roads
 

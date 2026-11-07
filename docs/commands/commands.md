@@ -1,7 +1,7 @@
 # Commands
 
-Install or upgrade: `npx github:work-w-chrstnrpj/engr-toolbox [init] [options]`
-Short command: `npm install -g github:work-w-chrstnrpj/engr-toolbox` once, then `engr <command>` in any project (it delegates to the project's `.ai/cli/` copy; `init` runs from the global copy).
+Install or upgrade: `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox [init] [options]`
+Short command: `npm install -g --allow-git=all github:work-w-chrstnrpj/engr-toolbox` once, then `engr <command>` in any project (it delegates to the project's `.ai/cli/` copy; `init` runs from the global copy).
 Without it: `node .ai/cli/bin/cli.mjs <command> [options]`. In this repository: `node bin/cli.mjs`.
 In coding agents: the `cli` skill (`/cli status`) or plain words.
 
@@ -33,6 +33,7 @@ Install or upgrade. Interactive in a terminal; `--yes` uses flags, then saved ch
 | `--size` | `small`, `medium`, `large` |
 | `--tools` | comma list of tools |
 | `--tracker` | `local`, `github`, `other` |
+| `--pipeline`, `--dev-branch`, `--main-branch`, `--release-targets` | Optional CI/CD at install time; same meaning as in `pipeline` |
 | `--scope` | `project` (default) or `global`: where skills, roles, workflows and policies go. Global puts them in `~/.engr-toolbox/.agents/` and each tool's user folder; project-specific files stay in the project |
 | `--yes`, `--dry-run`, `--force`, `--verbose` | |
 
@@ -73,6 +74,29 @@ Works the frontier one ticket at a time. Claims the ticket, runs `--agent "<cmd>
 ## sync
 
 Regenerates adapters from the project's `.agents/`, or from `~/.engr-toolbox/.agents/` when the project was installed with `--scope global` (`--scope` overrides). `--target <tool|all>` (default: tools in `engr-toolbox.json`), `--clean` removes stale managed files, `--check` fails if anything is out of date, `--dry-run`, `--force`.
+
+## pipeline
+
+Optional CI/CD from settings saved in `engr-toolbox.json` under `pipeline`. Generated for GitHub Actions and GitLab CI; for other CI systems `/setup-pipeline` writes the file. For different steps per branch, use `/setup-pipeline`.
+
+| Option | Values |
+|---|---|
+| `--provider` | `github` (`.github/workflows/engr-*.yml`), `gitlab` (`.gitlab-ci.yml`), `other` (nothing generated); detected from the git remote |
+| `--mode` | `none` (default), `test` (tests on PRs into develop/main and pushes to develop), `release` (also release on push to main) |
+| `--dev-branch` | `develop` (default), any name, or `none` for feature → main |
+| `--main-branch` | `main` (default) |
+| `--release-targets` | any of `release` (GitHub/GitLab Release with tag), `tag` (tag only), `npm`, `docker` (ghcr.io or the GitLab registry) |
+| `--install`, `--test`, `--build` | commands; install is detected from the lock file |
+| `--node`, `--version-file` | Node version (22); `package.json` or `VERSION` |
+| `--write` | save settings and write the CI file(s) |
+| `--check` | exit 1 when the workflow files no longer match the settings |
+| `--custom` / `--no-custom` | mark the workflows as hand-made (by `/setup-pipeline`): `--write` then only saves settings and never touches the files. `--no-custom --write --force` goes back to generated files |
+
+Without `--write` it only shows what would happen. A release job runs only when `v<version>` is not tagged yet. Switching to `none` removes the generated workflows; hand-written workflows are never touched.
+
+## release-version, release-notes
+
+`release-version` prints the version from `package.json` or `VERSION`. `release-notes [--version x.y.z]` prints the matching `CHANGELOG.md` section, else the commit subjects since the last tag. The release workflow uses both.
 
 ## uninstall
 

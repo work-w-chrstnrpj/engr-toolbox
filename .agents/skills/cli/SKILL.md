@@ -26,6 +26,8 @@ The user never needs to type the command. Run it for them and show the result.
 | "Is everything consistent?" | `validate` · `validate --task api` | Tickets, ADRs, map paths, skills, context |
 | "Do my commits reference tickets?" | `check-commits --range origin/main..HEAD` | Every commit has a ticket ID |
 | "Work the tickets unattended" | `loop --agent "<agent cmd>" --verify "<test cmd>" --dry-run` | Always show `--dry-run` first and ask before a real run |
+| "Set up CI / releases" | `pipeline --mode test` or `--mode release` then `--write` | Optional GitHub Actions: tests on PRs, release on merge to main |
+| "What version would be released?" | `release-version` · `release-notes` | From `package.json` or `VERSION`, notes from `CHANGELOG.md` |
 | "Regenerate the tool files" | `sync` · `sync --check` · `sync --clean` | Adapters from `.agents/` |
 | "What skills, roles, docs exist?" | `discover <topic>` | Same as the `discover` skill |
 | "Token cost?" | `measure` | Per tier |
@@ -35,4 +37,4 @@ The user never needs to type the command. Run it for them and show the result.
 - Read-only commands (`status`, `gate`, `trace`, `drift`, `validate`, `check-commits`, `discover`, `sync --check`) can be run straight away.
 - Commands that write (`status --write`, `trace --write`, `test-report --write`, `drift --mark`, `sync`) are fine during the workflow step that needs them; say what was written.
 - `loop` without `--dry-run` runs another agent: always confirm with the user first.
-- Upgrading or installing (`init`) needs the template package: `npx github:work-w-chrstnrpj/engr-toolbox init --yes`. Confirm first.
+- Upgrading or installing (`init`) needs the template package: `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox init --yes`. Confirm first.

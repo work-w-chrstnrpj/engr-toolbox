@@ -7,4 +7,5 @@
 | `quality.md` | QA and SDET flow: strategy, plan, automation, manual runs, bugs, report |
 | `team-sync.md` | Teammates changed code outside the AI |
 | `investigation-to-rca.md` | Bugs and incidents that need a formal RCA |
+| `branching-and-release.md` | Optional CI/CD: tests on PRs, release on merge to main |
 | `release-readiness.md` | Merging a feature or cutting a release |

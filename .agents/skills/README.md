@@ -18,6 +18,8 @@ Adapted from [Matt Pocock's skills](https://github.com/mattpocock/skills) (MIT) 
 | Build a whole spec in parallel | `implement-spec` ★ | you |
 | Triage incoming work | `triage` ★ | you |
 | Release | `release-check`, `pr` ★ | auto |
+| Set up CI/CD (optional) | `setup-pipeline` | you |
+| Prepare a release | `cut-release` | you |
 | Retrospective | `retro` ★ | you |
 | What now? | `next` | you |
 | Run a workflow command for me | `cli` (`/cli status`, `/cli gate release --feature cart`) | auto |

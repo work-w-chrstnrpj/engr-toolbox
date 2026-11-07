@@ -16,6 +16,7 @@ import { checkCommits } from '../lib/commits.mjs';
 import { runLoop } from '../lib/loop.mjs';
 import { readJUnit, recordRun, loadHistory, findFlaky, writeFlaky, writeRunSummary, summarise, buildTrace, formatTrace, writeTrace } from '../lib/qa.mjs';
 import { git } from '../lib/git.mjs';
+import { resolvePipeline, savePipeline, writePipeline, describePipeline, readVersion, releaseNotes, PIPELINE_MODES, RELEASE_TARGETS } from '../lib/pipeline.mjs';
 import { renderDiscover, renderItem, normaliseTopic, topicFromHelpFlag, TOPICS, collect } from '../lib/discover.mjs';
 
 const templateRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -27,7 +28,7 @@ Install or upgrade (from GitHub, no npm publish needed):
   ${UPSTREAM_INSTALL} [init] [options]
 
 Short command (one-time global install, then works in any project folder):
-  npm install -g github:work-w-chrstnrpj/engr-toolbox
+  npm install -g --allow-git=all github:work-w-chrstnrpj/engr-toolbox
   engr <command> [options]          (uses the project's own .ai/cli/ copy when there is one)
 
 Without the global install:
@@ -48,6 +49,12 @@ Commands:
   trace                Acceptance criteria → manual cases → automated tests   --feature <f> --write --strict
   test-report          Read JUnit XML results   --junit <file|dir> --feature <f> --ticket <f/NN> --label <name> --write
   loop                 Work ready tickets unattended   --agent "<cmd>" --verify "<cmd>" --max-tickets N --max-attempts N --dry-run
+  pipeline             CI/CD settings and GitHub Actions workflows (optional)
+                       --provider github|gitlab|other --mode none|test|release --dev-branch <name|none> --main-branch <name>
+                       --release-targets release,tag,npm,docker --test "<cmd>" --build "<cmd>" --install "<cmd>"
+                       --write (save and generate) · --check (CI: workflows match settings)
+                       --custom (files are hand-made by /setup-pipeline; never overwritten) · --no-custom
+  release-version      Print the version a release would use     release-notes  CHANGELOG section for a version
   sync                 Regenerate tool adapters from .agents/   --target <tool|all> --check --clean --dry-run --scope project|global
   uninstall            Remove globally installed skills and roles (only files this tool wrote)   --scope global --tools <list> --dry-run
   measure              Token budget per tier
@@ -56,12 +63,13 @@ Commands:
 Init options:
   --mode new|existing   --size small|medium|large   --tools claude,cursor,...   --tracker local|github|other
   --scope project|global   (where skills, roles, workflows and policies go; project-specific files always stay in the project)
+  --pipeline none|test|release  --provider github|gitlab|other  --dev-branch develop  --main-branch main  --release-targets release,tag,npm,docker
   --into <dir>   --yes   --dry-run   --force
 
 Tools: ${PROVIDERS.join(', ')}
 `;
 
-const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope']);
+const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope', 'pipeline', 'dev-branch', 'main-branch', 'release-targets', 'test', 'build', 'install', 'node', 'version', 'version-file', 'provider']);
 
 export function parseArgs(argv) {
   const flags = {};
@@ -99,11 +107,12 @@ async function cmdInit(flags, targetDir, forcedTool = null) {
     size: flags.size || flags.profile || previous.size || config.defaultTier,
     tools: forcedTool ? [forcedTool] : list(flags.tools || flags.tool) || previous.tools || detectTools(targetDir),
     tracker: flags.tracker || previous.tracker || detectTracker(targetDir),
-    scope: flags.scope || previous.scope || 'project'
+    scope: flags.scope || previous.scope || 'project',
+    pipeline: pipelineFlags(flags)
   };
   const interactive = !flags.yes && !forcedTool && process.stdin.isTTY && !flags['dry-run'];
   if (interactive) {
-    choices = await promptChoices({ targetDir, config });
+    choices = await promptChoices({ targetDir, config, previous });
     if (!choices) {
       console.log('Cancelled. Nothing was installed.');
       return;
@@ -117,7 +126,52 @@ async function cmdInit(flags, targetDir, forcedTool = null) {
   if (choices.scope === 'global') console.log(`Shared assets: ${out.canonicalRoot}/.agents (skills and roles also copied into each tool's user folder).`);
   for (const f of out.results.filter(r => r.status === 'project_fallback')) console.log(`  note: ${f.note}`);
   if (flags.verbose) printResults(out.results, targetDir);
-  console.log(nextSteps(choices));
+  console.log(nextSteps({ ...choices, pipeline: out.pipeline }));
+}
+
+function pipelineFlags(flags, modeFlag = 'pipeline') {
+  const mode = flags[modeFlag];
+  const any = mode || flags.provider || flags.custom || flags['no-custom'] || flags['dev-branch'] || flags['main-branch'] || flags['release-targets'] || flags.test || flags.build || flags.install || flags.node || flags['version-file'];
+  if (!any) return null;
+  const branches = {};
+  if (flags['dev-branch'] !== undefined) branches.development = flags['dev-branch'];
+  if (flags['main-branch'] !== undefined) branches.main = flags['main-branch'];
+  const release = {};
+  if (flags['release-targets']) release.targets = list(flags['release-targets']);
+  if (flags['version-file']) release.versionFile = flags['version-file'];
+  return { mode, provider: flags.provider, branches, release, test: flags.test, build: flags.build, install: flags.install, node: flags.node, custom: flags.custom ? true : flags['no-custom'] ? false : undefined };
+}
+
+function cmdPipeline(flags, targetDir) {
+  if (flags.mode && !PIPELINE_MODES.includes(flags.mode)) throw new Error(`--mode must be one of ${PIPELINE_MODES.join(', ')}`);
+  const overrides = pipelineFlags(flags, 'mode') || {};
+  const p = resolvePipeline(targetDir, overrides);
+  const scope = projectScope(targetDir);
+  if (flags.check && p.custom) {
+    console.log('✔ Custom pipeline: hand-maintained workflow files are not compared');
+    return;
+  }
+  if (flags.check) {
+    const changed = writePipeline(targetDir, p, { dryRun: true, scope }).filter(r => CHANGED_STATUSES.has(r.status));
+    if (changed.length) {
+      printResults(changed, targetDir);
+      console.error('\nCI workflows are out of date with the saved pipeline settings. Run: pipeline --write');
+      process.exit(1);
+    }
+    console.log('✔ CI workflows match the pipeline settings');
+    return;
+  }
+  console.log(describePipeline(p));
+  if (flags.write) {
+    savePipeline(targetDir, p);
+    const results = writePipeline(targetDir, p, { scope, force: !!flags.force });
+    console.log('');
+    printResults(results, targetDir);
+    const kept = results.filter(r => r.status === 'skipped_user_file');
+    if (kept.length) console.log('  (kept: a workflow file without the generated header is yours; delete it or use --force)');
+  } else if (Object.keys(overrides).length) {
+    console.log('\n(preview only: add --write to save these settings and generate the workflows)');
+  }
 }
 
 function cmdSync(flags, targetDir) {
@@ -327,6 +381,15 @@ async function main() {
     case 'loop': return cmdLoop(flags, targetDir);
     case 'trace': return cmdTrace(flags, targetDir);
     case 'discover': return cmdDiscover(args, flags, targetDir);
+    case 'pipeline': return cmdPipeline(flags, targetDir);
+    case 'release-version': {
+      const p = resolvePipeline(targetDir);
+      return console.log(readVersion(targetDir, flags['version-file'] || p.release.versionFile));
+    }
+    case 'release-notes': {
+      const p = resolvePipeline(targetDir);
+      return process.stdout.write(releaseNotes(targetDir, flags.version || readVersion(targetDir, p.release.versionFile)));
+    }
     case 'test-report': return cmdTestReport(flags, targetDir);
     case 'measure': return console.log(formatMeasureReport(measureTokens(templateRoot)));
     default:
