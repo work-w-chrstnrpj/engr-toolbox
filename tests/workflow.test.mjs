@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { templateRoot, tempDir, write, ticket, gitInit } from './helpers.mjs';
 import { loadTickets, frontier, renderBoard, writeBoard, setTicketStatus, appendProgressLog, parseBlockers } from '../lib/tickets.mjs';
-import { runGate } from '../lib/gates.mjs';
+import { runGate, gateDeliver } from '../lib/gates.mjs';
 import { detectDrift, markSyncPoint, readMapEntries } from '../lib/drift.mjs';
 import { checkCommits, checkMessage } from '../lib/commits.mjs';
 import { runLoop } from '../lib/loop.mjs';
@@ -140,6 +140,32 @@ describe('gates', () => {
   });
 });
 
+describe('deliver gate', () => {
+  test('needs every criterion ticked and named by a test, no open blockers, commits and tests evidence', () => {
+    const root = tempDir();
+    write(root, 'tickets/f/01-a.md', ticket({ n: '01', status: 'in-progress', criteria: ['- [x] AC1: one', '- [ ] AC2: two'] }));
+    let r = gateDeliver(root, 'f/01');
+    assert.equal(r.ok, false);
+    assert.ok(r.reasons.some(x => x.includes('not ticked: AC2')));
+    assert.ok(r.reasons.some(x => x.includes('no automated test names f/01#AC1, f/01#AC2')));
+    assert.ok(r.reasons.some(x => x.includes('evidence missing: Commits')));
+
+    write(root, 'tickets/f/01-a.md', ticket({ n: '01', status: 'in-progress', criteria: ['- [x] AC1: one', '- [x] AC2: two'], evidence: '- Commits: abc\n- Tests: npm test, 4 passed' }));
+    write(root, 'src/a.test.js', "it('f/01#AC1 one'); it('f/01#AC2 two')");
+    r = gateDeliver(root, 'f/01');
+    assert.equal(r.ok, true, r.reasons.join('; '));
+  });
+
+  test('qa tickets need ticked criteria and evidence, not automated tests; "Not committed" is not evidence', () => {
+    const root = tempDir();
+    write(root, 'tickets/f/02-qa.md', ticket({ n: '02', type: 'qa', status: 'in-progress', criteria: ['- [x] AC1: checked'], evidence: '- Commits: n/a run only\n- Tests: qa/runs/2026-11-07-f.md' }));
+    assert.equal(gateDeliver(root, 'f/02').ok, true);
+    write(root, 'tickets/f/03-dev.md', ticket({ n: '03', status: 'in-progress', criteria: ['- [x] AC1: x'], evidence: '- Commits: Not committed yet\n- Tests: ok' }));
+    write(root, 'a.test.js', "it('f/03#AC1')");
+    assert.match(gateDeliver(root, 'f/03').reasons.join(), /evidence missing: Commits/);
+  });
+});
+
 describe('drift', () => {
   test('reports changed files, affected maps, unmapped files and doc hints since the sync point', () => {
     const root = tempDir();
@@ -209,14 +235,66 @@ describe('loop', () => {
     assert.throws(() => runLoop({ root, agent: 'echo', log: () => {} }), /No check command/);
   });
 
-  test('green checks move the ticket to in-review; dependents stay blocked until it is done', () => {
+  test('delivered ticket (tests named, criteria ticked, evidence) moves to in-review; dependents stay blocked', () => {
     const root = project();
-    const r = runLoop({ root, agent: 'agent', check: 'checks', maxTickets: 2, log: () => {}, runner: () => true });
+    const deliver = cmd => {
+      if (cmd.startsWith('agent')) {
+        const f = path.join(root, 'tickets/shop/02-checkout.md');
+        fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('- [ ] works', '- [x] AC1: works').replace('- Commits:', '- Commits: abc123').replace('- Tests:', '- Tests: npm test passed'));
+        write(root, 'tests/checkout.test.js', "test('shop/02#AC1 works', () => {})");
+      }
+      return true;
+    };
+    const r = runLoop({ root, agent: 'agent', check: 'checks', maxTickets: 2, log: () => {}, runner: deliver });
     assert.deepEqual(r.worked.map(w => [w.id, w.outcome]), [['shop/02', 'in-review']]);
     assert.equal(r.stoppedBecause, 'frontier empty');
     const t = loadTickets(root).find(x => x.id === 'shop/02');
     assert.equal(t.status, 'in-review');
     assert.ok(t.logEntries >= 2);
+  });
+
+  test('green checks without delivery retry with the gate reasons as feedback, then hand to a human', () => {
+    const root = project();
+    const prompts = [];
+    const r = runLoop({ root, agent: 'agent', check: 'checks', maxAttempts: 2, log: () => {}, runner: cmd => (cmd.startsWith('agent') && prompts.push(cmd), true) });
+    assert.equal(r.worked[0].outcome, 'ready-for-human');
+    assert.doesNotMatch(prompts[0], /previous attempt/);
+    assert.match(prompts[1], /previous attempt was not delivered/);
+    assert.match(prompts[1], /acceptance criteria not ticked: AC1/);
+    assert.match(prompts[1], /no automated test names shop\/02#AC1/);
+    assert.match(fs.readFileSync(path.join(root, 'tickets/shop/02-checkout.md'), 'utf8'), /Gave up after 2 attempts\. Still failing: acceptance criteria not ticked/);
+  });
+
+  test('bugs raised during a run are reported; an S1 stops the loop; a blocking bug hands back', () => {
+    const root = project();
+    write(root, 'tickets/shop/05-other.md', ticket({ n: '05', title: 'Other' }));
+    const run = cmd => {
+      if (cmd.startsWith('agent')) {
+        write(root, 'tickets/shop/90-bug.md', ticket({ n: '90', title: 'Rounding bug', type: 'bug', status: 'needs-triage' }).replace('**Type:** bug', '**Type:** bug\n**Severity:** S1\n**Found during:** shop/02'));
+        const f = path.join(root, 'tickets/shop/02-checkout.md');
+        fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('- [ ] works', '- [x] AC1: works').replace('- Commits:', '- Commits: abc').replace('- Tests:', '- Tests: ok'));
+        write(root, 'tests/c.test.js', "test('shop/02#AC1 works')");
+      }
+      return true;
+    };
+    const r = runLoop({ root, agent: 'agent', check: 'checks', maxTickets: 3, log: () => {}, runner: run });
+    assert.deepEqual(r.newTickets.map(t => [t.id, t.type, t.severity, t.status, t.foundDuring]), [['shop/90', 'bug', 'S1', 'needs-triage', 'shop/02']]);
+    assert.match(r.stoppedBecause, /S1 bug shop\/90/);
+    assert.equal(r.worked.length, 1, 'stopped before shop/05');
+    assert.ok(!frontier(loadTickets(root)).some(t => t.id === 'shop/90'), 'needs-triage bugs are never picked up automatically');
+
+    const root2 = project();
+    const handBack = cmd => {
+      if (cmd.startsWith('agent')) {
+        const f = path.join(root2, 'tickets/shop/02-checkout.md');
+        fs.writeFileSync(f, fs.readFileSync(f, 'utf8').replace('**Status:** in-progress', '**Status:** ready-for-human').replace('**Blocked by:** 01', '**Blocked by:** 01, 91'));
+        write(root2, 'tickets/shop/91-blocker.md', ticket({ n: '91', type: 'bug', status: 'needs-triage' }));
+      }
+      return true;
+    };
+    const r2 = runLoop({ root: root2, agent: 'agent', check: 'checks', log: () => {}, runner: handBack });
+    assert.equal(r2.worked[0].outcome, 'ready-for-human');
+    assert.deepEqual(r2.newTickets.map(t => t.id), ['shop/91']);
   });
 
   test('failing checks retry up to the cap, then hand to a human and stop', () => {

@@ -159,7 +159,9 @@ Start a **fresh session** for each ticket, then:
 /implement cart/01
 ```
 
-The agent checks the gate, claims the ticket, writes a failing test, makes it pass (tests are named `cart/01#AC1 ...`), runs your checks, reviews its own diff, updates docs and maps, commits with `cart/01` in the message, and fills in the evidence. The ticket ends `in-review`.
+The agent checks the gate, claims the ticket, then for **every** acceptance criterion writes a failing test named after it (`cart/01#AC1 ...`), makes it pass and ticks it. It runs the full suite, reviews its own diff, updates docs, commits with `cart/01` in the message and records evidence, then runs `gate deliver`. It keeps going round until that passes (every criterion tested and ticked, evidence recorded) and only then sets `in-review`.
+
+**Bugs found along the way:** bugs in its own new code it simply fixes. Small existing bugs in code it touches it fixes with their own regression test and notes in the evidence. Anything else it files with `report-bug` (`Found during: cart/01`, status `needs-triage`) and carries on, unless the bug blocks the ticket or is a security or data-loss risk: then it stops and hands the ticket to you.
 
 ### Step 7 · Automate, SDET
 
@@ -278,7 +280,7 @@ engr loop --dry-run --verify "npm test"
 engr loop --agent "claude -p" --verify "npm test" --max-tickets 3
 ```
 
-For each ready ticket it claims it, runs the agent on `/implement`, then runs your verify command. Green moves the ticket to `in-review`. Red retries up to 3 times, then sets `ready-for-human` and stops. It never pushes or merges. Start with `--max-tickets 1` and review every PR.
+For each ready ticket it claims it, runs the agent on `/implement`, then runs your verify command **and** `gate deliver`. Only a fully delivered ticket (tests green, every criterion tested and ticked, evidence recorded) moves to `in-review`. Otherwise it retries up to 3 times, telling the agent exactly what is still missing, then sets `ready-for-human` and stops. Bugs the agent files along the way are listed at the end of the run; they wait for `/triage`, and an `S1` stops the loop. It never pushes or merges. Start with `--max-tickets 1` and review every PR.
 
 ---
 

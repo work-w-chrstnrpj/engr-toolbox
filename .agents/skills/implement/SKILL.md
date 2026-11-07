@@ -1,22 +1,57 @@
 ---
 name: implement
-description: Implement one ticket end to end: claim it, build test-first, run checks, review, update docs, record evidence.
+description: Implement one ticket end to end and keep going until it is fully delivered: every acceptance criterion proven by a passing test, checks green, review fixed, docs updated, evidence recorded. Bugs found along the way are raised, not hidden.
 disable-model-invocation: true
 ---
 
 # Implement
 
-Work exactly one ticket. Start from a fresh session per ticket.
+Work exactly one ticket, in a fresh session. The ticket is not done until `gate deliver` passes.
 
-## Steps
+## 1. Start
 
-1. Call the Skill tool with `tickets`. Fetch the ticket the user named (ask if ambiguous) and state its title.
-2. Run `node .ai/cli/bin/cli.mjs gate implement --ticket <id>`. If it fails (blocked, missing acceptance criteria, wrong state), stop and report.
-3. Claim it: status `in-progress`, add a progress log entry.
+1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous) and state its title.
+2. `node .ai/cli/bin/cli.mjs gate implement --ticket <id>`. If blocked, stop and report.
+3. Claim it: status `in-progress`, progress log entry.
 4. Read its inputs: spec, ADRs, designs, `GLOSSARY.md`, the relevant `.ai/maps/`.
-5. Call the Skill tool with `tdd` and build at the seams agreed in the spec. Run typecheck and single test files often, the full suite once at the end. Use the verification commands in `AGENTS.md`.
-6. If you hit an unplanned decision that is hard to reverse, stop, ask the user, and record an ADR with `domain-modeling`.
-7. Call the Skill tool with `code-review` against the branch's merge-base. Fix what it finds.
-8. Call the Skill tool with `update-docs` for anything this ticket changed (maps, reference docs, glossary).
-9. Commit to the current branch with the ticket ID in the message.
-10. Fill the ticket's Evidence (commit SHAs, test command and result, review summary, docs updated), tick acceptance criteria, set status `in-review` (or `done` if the user merges without PR), add a progress log entry, refresh the board.
+
+## 2. Build, one criterion at a time
+
+Call the Skill tool with `tdd`. For **every** acceptance criterion, in order:
+
+1. Write a test whose name starts with the criterion ID: `cart/01#AC1 the item appears in the cart`. Test at the seam agreed in the spec.
+2. Run it and see it fail for the right reason.
+3. Write the smallest code that makes it pass. Run it.
+4. Tick the criterion in the ticket (`- [x] AC1: ...`) only when its test passes.
+
+A criterion that cannot be tested automatically (visual, copy, an external system) is the only exception: say why in the progress log and leave it for a `qa` ticket; never tick it without proof.
+
+## 3. Prove it, and loop until it is perfect
+
+Repeat until every line passes:
+
+1. Run the verification commands in `AGENTS.md`: typecheck, the single test files often, then the **full suite**.
+2. Call the Skill tool with `code-review` against the merge-base. Fix every finding at or above "should fix"; note the rest.
+3. Call the Skill tool with `update-docs` for what this ticket changed.
+4. Commit with the ticket ID in the message. Record Evidence: commit SHAs, test command and result, review summary, docs updated.
+5. Run `node .ai/cli/bin/cli.mjs gate deliver --ticket <id>`. It checks: every criterion ticked, every criterion named by an automated test, no open blockers, Commits and Tests evidence present.
+
+If anything fails, fix it and go round again. Never weaken an assertion, skip a test, or tick a criterion to get green. After **three full rounds** that still fail for the same reason, stop: write what is failing and why in the progress log, set `ready-for-human`.
+
+When `gate deliver` passes: tick the remaining Evidence lines, set `in-review` (or `done` if the user merges without a PR), add a progress log entry, refresh the board.
+
+## 4. Bugs found along the way
+
+| You find | Do |
+|---|---|
+| A bug in the code you are writing for this ticket | Fix it. That is the normal red-green loop; no new ticket |
+| An existing bug in code this ticket already touches, small and safe to fix | Fix it here **with its own regression test**, and add "Also fixed: ..." to the Evidence |
+| An existing bug that **blocks** this ticket | Call the Skill tool with `report-bug` (`Found during: <this ticket>`), add the new bug to this ticket's `Blocked by`, log why, commit nothing broken, set this ticket to `ready-for-human`, stop |
+| An existing bug **unrelated** to this ticket | Call the Skill tool with `report-bug` (`Found during: <this ticket>`, status `needs-triage`), add one line to the progress log, and carry on. Do not fix it |
+| A security hole or data-loss risk | Call the Skill tool with `report-bug` with severity `S1`, set this ticket to `ready-for-human`, stop and tell the user. Never fix it quietly |
+
+Unsure whether it is small? It is not: raise it.
+
+## 5. Decisions
+
+If you hit an unplanned, hard-to-reverse decision, stop, ask the user, and record it as an ADR with `domain-modeling`.

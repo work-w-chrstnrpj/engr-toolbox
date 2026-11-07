@@ -45,7 +45,7 @@ Board in the terminal. `--write` rewrites `tickets/BOARD.md`. `--feature <f>` fi
 
 ## gate <phase>
 
-`spec`, `implement --ticket <feature/NN>`, `release --feature <feature>`. Prints what passed and what blocks. When `qa/` exists, `release` also blocks on uncovered criteria, criteria failing in the latest run, a failing latest automated run, and open S1/S2 bugs.
+`spec`, `implement --ticket <feature/NN>`, `deliver --ticket <feature/NN>`, `release --feature <feature>`. Prints what passed and what blocks. `deliver` is the definition of done for one ticket: every acceptance criterion ticked; for `dev`, `bug` and `automation` tickets every criterion named by an automated test (`feature/NN#ACn` in the test name); no open blockers; Commits and Tests evidence recorded. When `qa/` exists, `release` also blocks on uncovered criteria, criteria failing in the latest run, a failing latest automated run, and open S1/S2 bugs.
 
 ## drift
 
@@ -69,7 +69,7 @@ Every acceptance criterion on dev and bug tickets (`feature/NN#ACn`) with its ma
 
 ## loop
 
-Works the frontier one ticket at a time. Claims the ticket, runs `--agent "<cmd>" '<prompt>'`, runs `--verify "<cmd>"` (or `checks` in `engr-toolbox.json`, or `npm test`), moves green tickets to `in-review`, retries up to `--max-attempts` (3), then sets `ready-for-human` and stops. Options: `--max-tickets` (1), `--feature`, `--types` (`dev,bug,automation`), `--dry-run`. Never commits, pushes or merges itself.
+Works the frontier one ticket at a time. Claims the ticket, runs `--agent "<cmd>" '<prompt>'`, then `--verify "<cmd>"` (or `checks` in `engr-toolbox.json`, or `npm test`) and `gate deliver`. Only when all three pass does the ticket move to `in-review`. Otherwise it retries up to `--max-attempts` (3), giving the agent the exact failures, then sets `ready-for-human` and stops. Tickets the agent raises during the run (bugs found along the way) are listed at the end; they start as `needs-triage`, so the loop never works them itself, and an `S1` stops the run. Options: `--max-tickets` (1), `--feature`, `--types` (`dev,bug,automation`), `--dry-run`. Never commits, pushes or merges itself.
 
 ## sync
 

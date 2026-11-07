@@ -71,5 +71,6 @@ QA and SDET details: `.agents/workflows/quality.md`.
 |---|---|---|
 | Spec | `gate spec` | AGENTS.md goal or stack missing, no glossary |
 | Implement | `gate implement --ticket f/NN` | not ready, no criteria, open blockers |
+| Ticket done | `gate deliver --ticket f/NN` | a criterion not ticked or not named by an automated test, open blockers, no Commits or Tests evidence |
 | Release | `gate release --feature f` | any ticket open, done without evidence; with `qa/`: uncovered or failing criteria, red last run, open S1/S2 bug |
 | Merge | `validate`, `sync --check`, `check-commits` | broken tickets, ADR links, map paths, adapter drift, commits without ticket |
