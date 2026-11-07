@@ -6,8 +6,8 @@ Quality is proven, not felt. Every acceptance criterion (`feature/NN#ACn`) is tr
 |---|---|---|---|
 | `strategy.md` | Pyramid, tools, environments, CI stages, quality gates | sdet | `/test-strategy` |
 | `plans/<feature>.md` | Risk-based plan per spec | sdet + qa | `/test-plan` |
-| `cases/<feature>/TC-NN-<slug>.md` | Manual test cases, each with `Covers:` criterion IDs | qa | `create-manual-test-cases` |
-| `runs/<date>-<feature>-<label>.md` | Manual run results and test reports | qa, sdet | `execute-manual-test-cases`, `test-report` |
+| `cases/<feature>/TC-NN-<slug>.md` | Manual test cases, each with `Covers:` criterion IDs | qa | `manual-testing` |
+| `runs/<date>-<feature>-<label>.md` | Manual run results and test reports | qa, sdet | `manual-testing`, `test-report` |
 | `runs/history.json` | Automated results per run (from JUnit XML) | generated | `test-report --junit` |
 | `traceability.md` | Criterion → cases → automated tests → latest result | generated | `trace --write` |
 | `flaky.md` | Tests that both passed and failed in recent runs | generated | `test-report --junit` |

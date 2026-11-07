@@ -1,0 +1,35 @@
+---
+name: manual-testing
+description: Write and run manual QA test cases (functional, regression, sanity, UAT, exploratory, black-box, white-box, non-functional) traced to acceptance criteria, and report pass, fail, blocked or not-run with evidence. Use when the user asks to create manual test cases, run them, test a feature by hand, or do a UAT, sanity or regression pass.
+---
+
+# Manual Testing
+
+Two modes on one `qa` ticket (call the Skill tool with `tickets`): **write** the cases, then **run** them. Do one or both.
+
+## Write
+
+1. Read the sources: the ticket and its acceptance criteria, the spec, designs, `docs/inputs/`, `qa/plans/<feature>.md`, and any template or sample case the user names. Default template: `qa/_templates/test-case.md`. No template and no sample? Ask, or write a draft clearly marked with the assumed structure.
+2. Pick the modes the user asked for (default `functional`, plus `regression` when behaviour changed): `functional`, `regression`, `sanity`, `UAT` (business-readable), `black-box`, `white-box` (uses code paths, branches, validation), `non-functional` (accessibility, performance, compatibility, security, usability).
+3. Extract what is testable: flows, rules, permissions, data rules, edge cases, negative paths, integrations.
+4. Write one file per case: `qa/cases/<feature>/TC-NN-<slug>.md`, with:
+   - `**Covers:**` the criteria it tests (`cart/01#AC1, cart/01#AC2`), so `trace` can find it
+   - `**Priority:**` P1 to P3, `**Type:**` the mode, `**Automate:**` `yes`, `no`, or the automated test name once it exists
+   - preconditions, test data, and numbered steps with an expected result each
+5. Mark unclear behaviour as an open question, never as invented behaviour. Remove duplicate, vague or untestable cases.
+
+## Run
+
+1. Read the cases and the setup: environment, URLs, accounts, seed data, feature flags, devices. Missing environment, access or data marks the affected cases `blocked` with what is missing; never invent them.
+2. Execute each case step by step, as written, in the way it implies: `ui` (browser tools), `api` (safe test endpoints), `cli` (project commands), or `document-only` when execution is impossible (mark those `not-run`).
+3. Capture evidence: actual result, screenshot or log or response excerpt (no secrets or personal data).
+4. Write the run to `qa/runs/<date>-<feature>-<label>.md` from `qa/_templates/test-run.md`. Keep the columns `Case | Covers | Result | Evidence`, with Result one of `pass`, `fail`, `blocked`, `not-run`, so `trace` reads the latest result.
+5. File every failure with the `report-bug` skill and link the bug in the Evidence column.
+6. Summarise: totals, high-risk failures, environment, what was not covered. Suggest cases worth automating (`Automate: yes`) for the SDET.
+
+## Rules
+
+- Never mark a case passed unless its steps ran and the expected result was seen.
+- Never run destructive, payment, email or SMS, migration or production actions without explicit approval; never use production unless the user names it and accepts the risk.
+- Do not convert cases into automated tests unless asked; that is `automate-tests`.
+- Link the cases and the run file in the ticket Evidence, tick the criteria the run proved, add a progress log entry.

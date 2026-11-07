@@ -5,41 +5,16 @@
 ```text
 adopt-project / ingest (once)
         ↓
-grill-with-docs → design* → to-spec → to-tickets → implement (per ticket) → release-check → pr → retro
+grill-with-docs → design* → to-spec → to-tickets → implement (per ticket) → cut-release → retro
                                                     tdd → checks → code-review → update-docs → evidence
 * design only when the team wants ERD, flows or API design approved first
 ```
 
 ## Which skill when
 
-| You want to | Run |
-|---|---|
-| Onboard an existing repo | `/adopt-project` |
-| Bring in a team document | `/ingest` |
-| Shape an idea | `/grill-with-docs` |
-| Produce ERD, flows, API changes | `/design` |
-| Write the spec | `/to-spec` |
-| Split into tickets | `/to-tickets` |
-| Build one ticket | `/implement <feature/NN>` (fresh session per ticket) |
-| Build many unattended | `engr loop --agent "claude -p" --verify "npm test"` |
-| Sort incoming bugs and requests | `/triage` |
-| Fix a hard bug | `diagnosing-bugs` |
-| Review | `/code-review main` |
-| Set up testing for the project | `/test-strategy` |
-| Plan testing for a spec | `/test-plan` (after `/to-spec`) |
-| Automate tests | `automate-tests` |
-| Manual QA | `create-manual-test-cases`, `execute-manual-test-cases` |
-| File a defect | `report-bug` |
-| Flaky CI | `fix-flaky-tests` |
-| Go/no-go | `test-report` |
-| Release | `/cut-release` (gate, release-check, version, changelog, PR to main) |
-| Set up CI/CD | `/setup-pipeline` or `engr pipeline` |
-| Learn from it | `/retro` |
-| Teammates changed code | `/update-docs` (uses `drift`) |
-| Not sure | `/next` |
-| Teach me / challenge me | `/mentor`, `/coach` |
+One table, kept in one place: **[.agents/skills/README.md](../.agents/skills/README.md#which-skill-when)**. In your AI tool, `/next` reads it together with the ticket board and tells you the one next step; `/cli discover skills` lists what is installed.
 
-QA and SDET details: `.agents/workflows/quality.md`.
+QA and SDET details: `.agents/workflows/quality.md`. Releasing: `.agents/workflows/release.md`.
 
 ## Ticket types and owners
 
@@ -49,7 +24,7 @@ QA and SDET details: `.agents/workflows/quality.md`.
 | dev, bug | builder | implement, tdd, diagnosing-bugs |
 | review | reviewer (read-only) | code-review |
 | automation | sdet | test-strategy, test-plan, automate-tests, fix-flaky-tests, test-report |
-| qa | qa | create/execute-manual-test-cases, report-bug |
+| qa | qa | manual-testing, report-bug |
 | doc-drift | builder | update-docs |
 
 ## Where context lives

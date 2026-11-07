@@ -4,6 +4,25 @@ All notable changes to this project template are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.3.0] - 2026-11-07
+
+Fewer, clearer skills: 46 → 40, 7 → 6 workflows, one routing source.
+
+### Changed
+
+- `cli` now also covers `discover` (what is installed) and `sync-ai-adapters` (regenerating tool files).
+- `mentor` gained a re-explain mode (`/mentor that`) and replaces `wait-what`.
+- `cut-release` absorbs `release-check`: gate, test report, verification, drift and diff review, rollback, version, changelog, PR.
+- `manual-testing` replaces `create-manual-test-cases` and `execute-manual-test-cases` (write and run modes).
+- One `release` workflow replaces `release-readiness` and `branching-and-release`.
+- `.agents/skills/README.md` is the single "which skill when" source; `next` reads it and `docs/workflow.md` links to it.
+- `docs/getting-started.md` covers install only; `docs/guide.md` covers usage, now including CI/CD.
+- `release` ticket type added (used by `/cut-release`).
+
+### Removed
+
+- Skills `discover`, `sync-ai-adapters`, `wait-what`, `release-check`, `create-manual-test-cases`, `execute-manual-test-cases`.
+
 ## [3.2.0] - 2026-11-07
 
 ### Added

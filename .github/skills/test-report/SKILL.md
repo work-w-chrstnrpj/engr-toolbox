@@ -1,6 +1,6 @@
 ---
 name: test-report
-description: Produce a go/no-go test report for a feature or release from automated results, manual runs, traceability, and open bugs. Use before release-check, at the end of a test cycle, or when asked for test results.
+description: Produce a go/no-go test report for a feature or release from automated results, manual runs, traceability, and open bugs. Use before cut-release, at the end of a test cycle, or when asked for test results.
 ---
 
 

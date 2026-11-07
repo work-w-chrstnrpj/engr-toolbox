@@ -32,7 +32,7 @@ Test behaviour against the ticket's acceptance criteria and the spec, never agai
 
 ## Skills
 
-- `create-manual-test-cases`, `execute-manual-test-cases`, `report-bug`, `tickets`, `triage`
+- `manual-testing`, `report-bug`, `tickets`, `triage`
 - `test-plan` (contribute risks and manual scope)
 
 ## Playbooks (load only when needed)

@@ -24,7 +24,7 @@ engr-toolbox is **four things that work together**:
 
 | | Part | What it gives you | Where it lives |
 |---|---|---|---|
-| 🧠 | **Skillset** | 43 reusable steps the agent runs: brainstorm, design, spec, tickets, build test-first, review, test, release | `.agents/skills/` |
+| 🧠 | **Skillset** | 40 reusable steps the agent runs: brainstorm, design, spec, tickets, build test-first, review, test, release | `.agents/skills/` |
 | 🔁 | **Workflow** | The order of those steps, from idea to release, with a gate before each phase | `.agents/workflows/` |
 | 🗂️ | **Structure** | Fixed places for context: glossary, decisions, team documents, designs, maps, tests, tickets | `docs/`, `qa/`, `tickets/`, `.ai/` |
 | 👥 | **Roles** | Five owners, one per kind of ticket: architect, builder, reviewer, QA, SDET | `.agents/roles/` |
@@ -63,7 +63,7 @@ flowchart LR
   H --> K[test-report]
   I --> K
   J --> K
-  K --> L[release-check]
+  K --> L[cut-release]
   L --> M[pr]
   M --> N[retro]
 ```
@@ -114,15 +114,15 @@ Use the arrow keys to pick: new or existing project, size, **one or more AI tool
 
 | Phase | Skills |
 |---|---|
-| Start | `adopt-project`, `ingest`, `next`, `discover`, `cli` |
+| Start | `adopt-project`, `ingest`, `next`, `cli` |
 | Think | `grill-with-docs`, `grilling`, `design`, `prototype`, `wayfinder`, `domain-modeling`, `codebase-design` |
 | Plan | `to-spec`, `test-strategy`, `test-plan`, `to-tickets`, `triage` |
 | Build | `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `update-docs` |
-| Test | `automate-tests`, `create-manual-test-cases`, `execute-manual-test-cases`, `report-bug`, `fix-flaky-tests`, `test-report` |
-| Ship | `code-review`, `release-check`, `cut-release`, `setup-pipeline`, `pr`, `retro`, `generate-rca` |
-| Helpers | `mentor`, `coach`, `wait-what`, `handoff`, `to-questionnaire`, `ask-repo-question`, ... |
+| Test | `automate-tests`, `manual-testing`, `report-bug`, `fix-flaky-tests`, `test-report` |
+| Ship | `code-review`, `cut-release`, `setup-pipeline`, `pr`, `retro`, `generate-rca` |
+| Helpers | `mentor`, `coach`, `handoff`, `to-questionnaire`, `ask-repo-question`, `use-context-tools` |
 
-See them all, with descriptions: `/discover skills` in your agent, or `engr --help-discover-skillset` in the terminal.
+See them all, with descriptions: `/cli discover skills` in your agent, or `engr --help-discover-skillset` in the terminal.
 
 ## The structure it installs
 

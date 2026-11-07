@@ -9,7 +9,7 @@ All commands work on the current directory unless `--into <dir>` is given. Exit 
 
 ## discover
 
-See what this project has installed. Works in the terminal, and inside coding agents through the `discover` skill (`/discover skills`).
+See what this project has installed. Works in the terminal, and inside coding agents through the `cli` skill (`/cli discover skills`).
 
 | Command | Shows |
 |---|---|

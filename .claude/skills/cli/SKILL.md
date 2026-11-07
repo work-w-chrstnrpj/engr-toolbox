@@ -1,6 +1,6 @@
 ---
 name: cli
-description: List the workflow CLI commands, or run one for the user (status, gate, trace, test-report, drift, validate, check-commits, loop, sync, discover). Use when the user asks what commands exist, or asks in plain words for the board, a gate, coverage, drift, or validation.
+description: Run any workflow command for the user and show the result (status, gate, trace, test-report, drift, validate, check-commits, pipeline, loop, sync), list what the project has installed (skills, roles, workflows, docs, structure), or regenerate the AI tool files after editing .agents/. Use when the user asks what commands, skills, roles or docs exist, or asks in plain words for the board, a gate, coverage, drift, validation or a sync.
 ---
 
 
@@ -8,36 +8,54 @@ description: List the workflow CLI commands, or run one for the user (status, ga
 
 # CLI
 
-The user never needs to type the command. Run it for them and show the result.
-
-## How to run
-
-`node .ai/cli/bin/cli.mjs <command>`. If the user has the global command installed, `engr <command>` is the same thing.
+The user never needs to type a command. Run it for them: `node .ai/cli/bin/cli.mjs <command>` (or `engr <command>` when the global command is installed) and show the result as is, plus at most two lines on what it means.
 
 ## Commands
 
-| Ask | Command | What it does |
-|---|---|---|
-| "What can I run?" | *(show this table)* | |
-| "Show the board" | `status` · `status --write` | Tickets by state; `--write` rewrites `tickets/BOARD.md` |
-| "Can I start cart/02?" | `gate implement --ticket cart/02` | Ready, has criteria, no open blockers |
-| "Can I write the spec?" | `gate spec` | Goal and stack in `AGENTS.md`, glossary exists |
-| "Is cart ready to ship?" | `gate release --feature cart` | All tickets done with evidence; with `qa/`: criteria covered and passing, no open S1/S2 |
-| "What is tested?" | `trace --feature cart` · `--write` · `--strict` | Criteria → manual cases → automated tests → results |
-| "Record these test results" | `test-report --junit <path> --feature cart --ticket cart/03 --write` | History, flaky list, run summary, ticket evidence |
-| "What did teammates change?" | `drift` · `drift --mark` | Changes since the last sync, maps and docs affected |
-| "Is everything consistent?" | `validate` · `validate --task api` | Tickets, ADRs, map paths, skills, context |
-| "Do my commits reference tickets?" | `check-commits --range origin/main..HEAD` | Every commit has a ticket ID |
-| "Work the tickets unattended" | `loop --agent "<agent cmd>" --verify "<test cmd>" --dry-run` | Always show `--dry-run` first and ask before a real run |
-| "Set up CI / releases" | `pipeline --mode test` or `--mode release` then `--write` | Optional GitHub Actions: tests on PRs, release on merge to main |
-| "What version would be released?" | `release-version` · `release-notes` | From `package.json` or `VERSION`, notes from `CHANGELOG.md` |
-| "Regenerate the tool files" | `sync` · `sync --check` · `sync --clean` | Adapters from `.agents/` |
-| "What skills, roles, docs exist?" | `discover <topic>` | Same as the `discover` skill |
-| "Token cost?" | `measure` | Per tier |
+| Ask | Command |
+|---|---|
+| "What can I run?" | show this table |
+| "Show the board" | `status` · `status --write` (rewrites `tickets/BOARD.md`) |
+| "Can I start cart/02?" | `gate implement --ticket cart/02` |
+| "Is cart/02 done?" | `gate deliver --ticket cart/02` |
+| "Can I write the spec?" | `gate spec` |
+| "Is cart ready to ship?" | `gate release --feature cart` |
+| "What is tested?" | `trace --feature cart` · `--write` · `--strict` |
+| "Record these test results" | `test-report --junit <path> --feature cart --ticket cart/03 --write` |
+| "What did teammates change?" | `drift` · `drift --mark` |
+| "Is everything consistent?" | `validate` · `validate --task api` |
+| "Do my commits reference tickets?" | `check-commits --range origin/main..HEAD` |
+| "Set up CI / releases" | `pipeline` (or run `/setup-pipeline` for per-branch steps) |
+| "What version would be released?" | `release-version` · `release-notes` |
+| "Work the tickets unattended" | `loop --agent "<agent cmd>" --verify "<test cmd>" --dry-run` |
+| "Token cost?" | `measure` |
+
+## Discover what is installed
+
+| Ask | Command |
+|---|---|
+| "What skills do we have?" | `discover skills` (filter: `--search <word>`) |
+| "What roles?" / "What workflows?" | `discover roles` · `discover workflows` |
+| "Which docs exist and are they filled?" | `discover docs` (shows each doc's status) |
+| "What is each folder for?" | `discover structure` |
+| "Tell me about tdd" | `discover tdd` (any skill, role or workflow name) |
+| "Everything" | `discover` |
+
+Then add one line: which item fits what the user is trying to do, and how to start it (`/name` in Claude Code, ask by name in Codex). For "what should I do next", use `/next` instead.
+
+## Regenerate the AI tool files
+
+`.agents/` is the source; `.claude/`, `.cursor/`, `.github/agents/` and the other tool folders are generated from it.
+
+1. Edit the canonical file in `.agents/`, never the copy in a tool folder.
+2. `sync --dry-run` to preview, `sync` to apply (all tools in `engr-toolbox.json`, or `--target claude`), `sync --clean` to remove skills that no longer exist.
+3. `sync --check` must exit 0.
+
+Generated files carry a `Generated by engr-toolbox` line. Sync only updates files that have it; **delete that line to own a file** and sync leaves it alone.
 
 ## Rules
 
-- Read-only commands (`status`, `gate`, `trace`, `drift`, `validate`, `check-commits`, `discover`, `sync --check`) can be run straight away.
-- Commands that write (`status --write`, `trace --write`, `test-report --write`, `drift --mark`, `sync`) are fine during the workflow step that needs them; say what was written.
-- `loop` without `--dry-run` runs another agent: always confirm with the user first.
-- Upgrading or installing (`init`) needs the template package: `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox init --yes`. Confirm first.
+- Read-only commands (`status`, `gate`, `trace`, `drift`, `validate`, `check-commits`, `discover`, `sync --check`, `pipeline` without `--write`) run straight away.
+- Commands that write (`--write`, `drift --mark`, `sync`) are fine during the workflow step that needs them; say what was written.
+- `loop` without `--dry-run` starts another agent: show the dry run and get a yes first.
+- Installing or upgrading (`init`) needs the package from GitHub: `npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox init --yes`. Confirm first.
