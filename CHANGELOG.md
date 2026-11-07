@@ -4,6 +4,16 @@ All notable changes to this project template are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.4.0] - 2026-11-07
+
+### Added
+
+- Batch ingest: `inputs scan|add <files or folders...>` copies only new and changed team documents into `docs/inputs/<team>/`, keeps earlier versions, and records each in `INDEX.md`; `/ingest` works through a whole folder.
+
+### Changed
+
+- Abbreviations are spelled out the first time they appear in each doc (ADR, ERD, PRD, TDD, API, CI/CD, PR, QA, SDET, UAT, RCA and others), including skill and folder names in the README and skill and role tables.
+
 ## [3.3.0] - 2026-11-07
 
 Fewer, clearer skills: 46 → 40, 7 → 6 workflows, one routing source.

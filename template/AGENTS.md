@@ -41,7 +41,7 @@ grill-with-docs → design (if needed) → to-spec → to-tickets → implement 
 | Decisions (why) | `docs/adr/` |
 | Architecture overview | `docs/architecture.md` |
 | Team documents (read-only) | `docs/inputs/` |
-| Designs (ERD, flows, API changes) | `docs/design/` |
+| Designs (ERD (Entity Relationship Diagram), flows, API (Application Programming Interface) changes) | `docs/design/` |
 | Current system reference | `docs/api/`, `docs/database/`, `docs/deployment/`, `docs/testing/` |
 | Where code lives | `.ai/maps/`, `.ai/context-routing.md` |
 | Work and evidence | `tickets/`, `tickets/BOARD.md` |
@@ -51,7 +51,7 @@ grill-with-docs → design (if needed) → to-spec → to-tickets → implement 
 ## Rules
 
 - The code is the truth; maps and summaries are for navigation only. Read exact files before editing.
-- Never edit `docs/inputs/`. Never rewrite an accepted ADR; supersede it.
+- Never edit `docs/inputs/`. Never rewrite an accepted ADR (Architecture Decision Record); supersede it.
 - Small, reviewable changes inside the ticket's scope. Run verification before claiming success.
 - Ask before destructive, production, secret, or migration operations. No force-push or history rewrites without approval.
 - Never commit secrets or log sensitive data. Validate input at trust boundaries.

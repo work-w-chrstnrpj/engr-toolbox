@@ -4,7 +4,7 @@ Quality is proven, not felt. Every acceptance criterion (`feature/NN#ACn`) is tr
 
 | Path | What | Owner | Written by |
 |---|---|---|---|
-| `strategy.md` | Pyramid, tools, environments, CI stages, quality gates | sdet | `/test-strategy` |
+| `strategy.md` | Pyramid, tools, environments, CI (Continuous Integration) stages, quality gates | sdet | `/test-strategy` |
 | `plans/<feature>.md` | Risk-based plan per spec | sdet + qa | `/test-plan` |
 | `cases/<feature>/TC-NN-<slug>.md` | Manual test cases, each with `Covers:` criterion IDs | qa | `manual-testing` |
 | `runs/<date>-<feature>-<label>.md` | Manual run results and test reports | qa, sdet | `manual-testing`, `test-report` |

@@ -19,7 +19,7 @@ See what this project has installed. Works in the terminal, and inside coding ag
 | `discover workflows` or `--help-discover-workflow` | Main flow and every workflow |
 | `discover docs` or `--help-discover-docs` | Every doc and context file with its status (NOT_STARTED, accepted, ...) |
 | `discover structure` or `--help-discover-structure` | Folders and what each is for |
-| `discover commands` | CLI commands |
+| `discover commands` | CLI (command-line interface) commands |
 | `discover skill tdd`, `discover role sdet`, `discover workflow quality`, or `discover tdd` | One item in detail |
 | `--search <word>` | Filter any list, for example `discover skills --search flaky` |
 
@@ -33,7 +33,7 @@ Install or upgrade. Interactive in a terminal; `--yes` uses flags, then saved ch
 | `--size` | `small`, `medium`, `large` |
 | `--tools` | comma list of tools |
 | `--tracker` | `local`, `github`, `other` |
-| `--pipeline`, `--dev-branch`, `--main-branch`, `--release-targets` | Optional CI/CD at install time; same meaning as in `pipeline` |
+| `--pipeline`, `--dev-branch`, `--main-branch`, `--release-targets` | Optional CI/CD (Continuous Integration and Continuous Delivery) at install time; same meaning as in `pipeline` |
 | `--scope` | `project` (default) or `global`: where skills, roles, workflows and policies go. Global puts them in `~/.engr-toolbox/.agents/` and each tool's user folder; project-specific files stay in the project |
 | `--yes`, `--dry-run`, `--force`, `--verbose` | |
 
@@ -47,13 +47,25 @@ Board in the terminal. `--write` rewrites `tickets/BOARD.md`. `--feature <f>` fi
 
 `spec`, `implement --ticket <feature/NN>`, `deliver --ticket <feature/NN>`, `release --feature <feature>`. Prints what passed and what blocks. `deliver` is the definition of done for one ticket: every acceptance criterion ticked; for `dev`, `bug` and `automation` tickets every criterion named by an automated test (`feature/NN#ACn` in the test name); no open blockers; Commits and Tests evidence recorded. When `qa/` exists, `release` also blocks on uncovered criteria, criteria failing in the latest run, a failing latest automated run, and open S1/S2 bugs.
 
+## inputs
+
+Bring team documents into `docs/inputs/`: one file, several, or whole folders. The `/ingest` skill runs this for you, then reads each file.
+
+| Command | Does |
+|---|---|
+| `inputs` | List what was ingested, with older versions |
+| `inputs scan <files or folders...>` | Show each file as new, changed or unchanged. Writes nothing |
+| `inputs add <files or folders...>` | Copy new and changed files; a changed file's previous version is kept beside it with the date (`tdd.2026-11-07.md`); each file gets a row in `INDEX.md` |
+
+Options: `--to <subfolder>` (for example `payments`; a folder otherwise keeps its own name), `--owner <team or person>`, `--version <v>`, `--dry-run`. Hidden files and `node_modules` are skipped; files over 50 MB are listed, not copied. `docs/inputs/.manifest.json` remembers what was ingested.
+
 ## drift
 
 Changes since `.ai/last-sync`: commits, changed files, maps that point at them, files no map covers, reference docs that may need updating, broken map paths. `--since <ref>` overrides the sync point. `--mark` saves `HEAD` as the new sync point. `--json` for machines.
 
 ## validate
 
-Roles, skills (including that skills only call model-invoked skills that exist), ADR status and supersede links, map paths, tickets (status, blockers, evidence on done), and core context. `--task api|database|deployment|testing` blocks when that reference doc is not started.
+Roles, skills (including that skills only call model-invoked skills that exist), ADR (Architecture Decision Record) status and supersede links, map paths, tickets (status, blockers, evidence on done), and core context. `--task api|database|deployment|testing` blocks when that reference doc is not started.
 
 ## check-commits
 
@@ -82,7 +94,7 @@ Optional CI/CD from settings saved in `engr-toolbox.json` under `pipeline`. Gene
 | Option | Values |
 |---|---|
 | `--provider` | `github` (`.github/workflows/engr-*.yml`), `gitlab` (`.gitlab-ci.yml`), `other` (nothing generated); detected from the git remote |
-| `--mode` | `none` (default), `test` (tests on PRs into develop/main and pushes to develop), `release` (also release on push to main) |
+| `--mode` | `none` (default), `test` runs tests on PRs (pull requests) into develop or main and on pushes to develop; `release` also releases on push to main |
 | `--dev-branch` | `develop` (default), any name, or `none` for feature → main |
 | `--main-branch` | `main` (default) |
 | `--release-targets` | any of `release` (GitHub/GitLab Release with tag), `tag` (tag only), `npm`, `docker` (ghcr.io or the GitLab registry) |

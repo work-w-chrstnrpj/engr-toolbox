@@ -2,7 +2,7 @@
 
 # Release
 
-From a merged feature to a published version. The CI pipeline part is optional and configurable.
+From a merged feature to a published version. The CI (Continuous Integration) pipeline part is optional and configurable.
 
 Optional and configurable. Easiest: `/setup-pipeline`. The agent asks what each branch should run and writes the YAML, so feature → develop and develop → main can run different steps (lint, tests, build, tag only, GitHub Release, npm, Docker, deploy). Quick generated defaults: `node .ai/cli/bin/cli.mjs pipeline --mode test|release --write`.
 
@@ -11,7 +11,7 @@ feature/<ticket> ──PR──▶ develop ──PR──▶ main ──▶ rele
                    tests              tests       tests + release / tag / npm / Docker
 ```
 
-**PR vs merge.** A PR (GitLab: merge request) is the request to bring a branch in; its checks run *before* anything changes and stop bad code. A merge is the code landing; CI sees it as a push to the target branch, which is where release steps run.
+**PR (pull request) vs merge.** A PR (GitLab: merge request) is the request to bring a branch in; its checks run *before* anything changes and stop bad code. A merge is the code landing; CI sees it as a push to the target branch, which is where release steps run.
 
 | Event | `test` mode | `release` mode |
 |---|---|---|

@@ -1,6 +1,6 @@
 # Quality
 
-QA and SDET work from the same tickets and criteria as dev, starting at the spec, not after the code.
+QA (Quality Assurance) and SDET (Software Development Engineer in Test) work from the same tickets and criteria as dev, starting at the spec, not after the code.
 
 ```text
 test-strategy (once, sdet)
@@ -17,7 +17,7 @@ grill-with-docs (qa/sdet ask "how do we test this?") → to-spec (seams) → tes
 | Strategy | sdet | `qa/strategy.md` | |
 | Plan | sdet + qa | `qa/plans/<feature>.md`, qa and automation tickets | |
 | Criteria IDs | whoever writes tickets | `- [ ] AC1: ...` on every dev ticket | `validate` (no duplicates) |
-| Automation | sdet | tests named `feature/NN#ACn ...`, JUnit in CI | `trace`, `test-report --junit` |
+| Automation | sdet | tests named `feature/NN#ACn ...`, JUnit in CI (Continuous Integration) | `trace`, `test-report --junit` |
 | Manual | qa | `qa/cases/`, `qa/runs/` | `trace` reads Covers and Result |
 | Bugs | qa, sdet | `bug` tickets with severity | open S1/S2 block release |
 | Flaky | sdet | `qa/flaky.md` → `fix-flaky-tests` | |

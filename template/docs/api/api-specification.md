@@ -10,7 +10,7 @@ Use it only if the project exposes HTTP APIs, RPC methods, GraphQL operations, e
 
 ## Suggested Sections
 
-- API overview.
+- API (Application Programming Interface) overview.
 - Authentication and authorization.
 - Endpoints, operations, or messages.
 - Request shapes.
