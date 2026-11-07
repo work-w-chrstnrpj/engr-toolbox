@@ -4,6 +4,21 @@ All notable changes to this project template are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [3.1.0] - 2026-11-07
+
+### Added
+
+- Arrow-key pickers in `init`; AI tools are a multi-select (Space to tick several).
+- Optional CI/CD: `pipeline` command and install question generate GitHub Actions for tests on PRs and pushes to the development branch, and releases on merge to main (GitHub Release, npm, Docker). Branches, commands and targets are configurable; releases only run for untagged versions.
+- `release-version` and `release-notes` commands; `setup-pipeline` and `cut-release` skills; `branching-and-release` workflow.
+- GitLab CI generation (`--provider gitlab`), provider detection from the git remote, `--provider other` for hand-written CI; `tag` (tag only) release target; `release` replaces `github` (still accepted).
+- `/setup-pipeline` writes the YAML itself, with different steps per branch (tests only on feature → develop; tests, build, tag, release or packages on develop → main). `pipeline --custom` keeps hand-made workflows from being overwritten.
+- npm 12 note: install commands use `--allow-git=all`.
+
+### Removed
+
+- `template/ci/github-actions.yml` (replaced by the generated pipeline).
+
 ## [3.0.0] - 2026-11-07
 
 Renamed to **engr-toolbox**.

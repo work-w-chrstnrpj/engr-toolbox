@@ -32,7 +32,8 @@ grill-with-docs → design* → to-spec → to-tickets → implement (per ticket
 | File a defect | `report-bug` |
 | Flaky CI | `fix-flaky-tests` |
 | Go/no-go | `test-report` |
-| Release | `release-check`, then `pr` |
+| Release | `/cut-release` (gate, release-check, version, changelog, PR to main) |
+| Set up CI/CD | `/setup-pipeline` or `engr pipeline` |
 | Learn from it | `/retro` |
 | Teammates changed code | `/update-docs` (uses `drift`) |
 | Not sure | `/next` |

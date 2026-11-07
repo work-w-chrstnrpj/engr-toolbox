@@ -11,7 +11,7 @@ Skills, roles, a project structure, and a CLI that keeps the agent honest.
 ![AI tools: 11](https://img.shields.io/badge/AI%20tools-11-purple)
 
 ```bash
-npx github:work-w-chrstnrpj/engr-toolbox
+npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox
 ```
 
 </div>
@@ -44,6 +44,7 @@ Plus a **zero-dependency CLI** that checks the rules instead of hoping the agent
 | The team handed you a TDD and an API spec | Read-only `docs/inputs/`, `/ingest`, design-first tickets with ERD and flows |
 | Teammates change code and the docs rot | `drift` finds what changed, `update-docs` fixes facts and flags decisions |
 | Quality is judged by feel | Acceptance-criteria IDs, traceability, JUnit reports, flaky tracking |
+| Merging and releasing is manual and inconsistent | Optional CI/CD: tests on every PR, release to GitHub, npm or Docker on merge to main |
 | Automation runs away | Gates, a required verify command, retry caps, hand-off to a human |
 
 ## How it works
@@ -74,10 +75,10 @@ Every box is a skill. Every arrow passes through a ticket. Lost at any point? Ru
 **1. Install** in your project folder (Node 18+):
 
 ```bash
-npx github:work-w-chrstnrpj/engr-toolbox
+npx --allow-git=all github:work-w-chrstnrpj/engr-toolbox
 ```
 
-It asks five questions: new or existing project, size, which AI tools, where tickets live, and whether skills go in the project or globally.
+Use the arrow keys to pick: new or existing project, size, **one or more AI tools** (Space to tick), where tickets live, project or global skills, and optional CI/CD.
 
 **2. Onboard** in your AI tool (Claude Code, Codex, Cursor, ...):
 
@@ -118,7 +119,7 @@ It asks five questions: new or existing project, size, which AI tools, where tic
 | Plan | `to-spec`, `test-strategy`, `test-plan`, `to-tickets`, `triage` |
 | Build | `implement`, `implement-spec`, `tdd`, `diagnosing-bugs`, `update-docs` |
 | Test | `automate-tests`, `create-manual-test-cases`, `execute-manual-test-cases`, `report-bug`, `fix-flaky-tests`, `test-report` |
-| Ship | `code-review`, `release-check`, `pr`, `retro`, `generate-rca` |
+| Ship | `code-review`, `release-check`, `cut-release`, `setup-pipeline`, `pr`, `retro`, `generate-rca` |
 | Helpers | `mentor`, `coach`, `wait-what`, `handoff`, `to-questionnaire`, `ask-repo-question`, ... |
 
 See them all, with descriptions: `/discover skills` in your agent, or `engr --help-discover-skillset` in the terminal.
@@ -157,9 +158,19 @@ In Claude Code or Codex you never need to type these. Use `/cli status` or just 
 | `engr test-report --junit results/ --write` | Record test results, track flaky tests, update ticket evidence |
 | `engr drift` | What teammates changed since your last sync |
 | `engr validate` | Tickets, ADRs, map paths, skills: all consistent? |
+| `engr pipeline --mode release --write` | Optional CI/CD: tests on PRs, release on merge to main |
 | `engr --help-discover` | Everything installed: skills, roles, workflows, docs, structure |
 
-`engr` is the short command (`npm install -g github:work-w-chrstnrpj/engr-toolbox`, once). Without it: `node .ai/cli/bin/cli.mjs <command>`.
+`engr` is the short command (`npm install -g --allow-git=all github:work-w-chrstnrpj/engr-toolbox`, once). Without it: `node .ai/cli/bin/cli.mjs <command>`.
+
+## CI/CD (optional)
+
+```text
+feature ──PR──▶ develop ──PR──▶ main ──▶ release
+          tests            tests       tests + release / tag / npm / Docker
+```
+
+Easiest: run **`/setup-pipeline`** and answer what each branch should run. The agent writes the GitHub Actions YAML for you, so feature → develop can run only tests while develop → main runs tests, build, tag, release and packages. Or pick defaults during install, or use `engr pipeline`. Branch names, commands and release targets are all configurable; `--dev-branch none` gives a simple feature → main flow. Works with **GitHub Actions** and **GitLab CI** (generated), and any other CI system (`/setup-pipeline` writes it). Releases only happen when the version is new, so a merge without a version bump never publishes. Prepare one with `/cut-release`.
 
 ## Works with
 

@@ -8,7 +8,7 @@ description: Gate a feature or version for merge or release: every ticket done w
 ## Steps
 
 1. Run `node .ai/cli/bin/cli.mjs gate release --feature <feature>`. It fails if any ticket is not `done`/`wontfix` or a done ticket lacks evidence. Fix or report.
-2. If `qa/` exists, call the Skill tool with `test-report` and use its verdict.
+2. If `qa/` exists (medium and large), run the `test-report` skill and use its GO or NO-GO verdict.
 3. Run every verification command in `AGENTS.md` (lint, typecheck, test, build, e2e). Record the results.
 4. Run `node .ai/cli/bin/cli.mjs drift` and `validate`: maps, reference docs and ADR links must be current.
 5. Check `CHANGELOG.md` has an entry for this feature linking its tickets.
