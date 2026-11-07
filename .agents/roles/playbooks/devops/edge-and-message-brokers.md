@@ -11,7 +11,7 @@ Procedure:
 2. Identify producer and consumer ownership, throughput needs, and failure handling expectations.
 3. Configure observability for queue depth, consumer health, retries, and dead-letter volume.
 4. Document safe replay, purge, or drain procedures for operators.
-5. Coordinate with Backend & Database Engineer for message-format or handler defects.
+5. Coordinate with the builder (backend) for message-format or handler defects.
 
 ---
 
@@ -26,7 +26,7 @@ Procedure:
 2. Define rollout, rollback, and health-validation steps suitable for limited connectivity or remote hosts.
 3. Keep edge configuration separable from core cloud defaults and document environment differences.
 4. Add observability or heartbeat signals appropriate to edge operational needs.
-5. Coordinate with Backend & Database Engineer for edge API, telemetry, or data-sync dependencies.
+5. Coordinate with the builder (backend) for edge API, telemetry, or data-sync dependencies.
 
 ---
 

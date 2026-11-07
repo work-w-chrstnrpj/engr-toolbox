@@ -1,0 +1,24 @@
+---
+name: test-strategy
+description: Write or update the project's test strategy once: test pyramid, tools, environments, test data rules, CI stages and quality gates.
+disable-model-invocation: true
+---
+
+# Test Strategy
+
+Run once per project (and again when the stack changes). Output: `qa/strategy.md`.
+
+## Steps
+
+1. Read `AGENTS.md` (stack, verification commands), `docs/architecture.md`, `.ai/maps/testing-map.md`, existing tests and CI config. Note what already exists; do not plan from scratch if a suite is there.
+2. Call the Skill tool with `grilling` to settle the open choices with the user, one round at a time, each with a recommended answer:
+   - **Pyramid:** what is tested at unit, integration, contract, API and UI level, and rough proportions.
+   - **Tools:** runner, assertion library, UI tool (for example Playwright), API tool, contract tool, mocking at system edges only. Prefer what the repo already uses.
+   - **Environments:** local, CI, staging; what each test level runs against; how test data is created and reset.
+   - **CI stages:** order, which run on every PR, which nightly, parallelism, retry policy (at most one retry, logged as flaky).
+   - **Reports:** JUnit XML output path for `test-report`.
+   - **Quality gates:** criteria coverage (default 100% of acceptance criteria traced), pass rate, max flaky rate (default 2%), open bug severity allowed at release (default none at S1/S2).
+   - **Non-functional:** performance budgets, accessibility standard, security checks.
+3. Write `qa/strategy.md` from `qa/_templates/strategy.md`. Record hard-to-reverse choices (framework, environments) as ADRs with `domain-modeling`.
+4. Add the test commands to `AGENTS.md` Verification Commands and the paths to `.ai/maps/testing-map.md`.
+5. Open `automation` tickets for any missing framework setup (call the Skill tool with `tickets`).

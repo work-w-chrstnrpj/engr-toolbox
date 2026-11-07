@@ -36,7 +36,7 @@ Procedure:
 2. Define inputs, outputs, failure behavior, and idempotency expectations for the automation.
 3. Implement scripts that are readable, minimally privileged, and safe to rerun where intended.
 4. Add usage notes and integrate scripts into CI or deployment flows when appropriate.
-5. Coordinate with Security Engineer when scripts touch credentials, external systems, or destructive actions.
+5. Coordinate with the reviewer (security) when scripts touch credentials, external systems, or destructive actions.
 
 Guardrails:
 - Do not embed secrets in scripts or checked-in config.

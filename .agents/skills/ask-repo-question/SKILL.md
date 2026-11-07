@@ -1,40 +1,20 @@
 ---
 name: ask-repo-question
-description: Answer repository questions without editing files. Use when the user asks how the codebase works, where behavior lives, what a change would affect, or wants explanation only.
+description: Answer questions about the repository without editing files. Use when the user asks how the codebase works, where behaviour lives, or what a change would affect.
 ---
 
 # Ask Repo Question
 
-## Use When
+## Steps
 
-- The user asks how the codebase works.
-- The user asks where behavior lives.
-- The user asks what a change would affect.
-- The user asks for explanation only.
-- The user asks a general repo question before deciding whether to change code.
-
-## Workflow
-
-1. Read `AGENTS.md` when project guardrails matter.
-2. Use `.ai/context-routing.md` when the question needs repo navigation.
-3. Pick the smallest relevant map from `.ai/maps/` when helpful.
-4. Use `.ai/index`, `rg`, Graphify, Aider repo maps, or Understand Anything to locate likely files.
-5. Read exact files before making factual claims.
-6. Answer directly with file references when useful.
+1. Read the cheap context first: `GLOSSARY.md`, then `.ai/context-routing.md` and the relevant `.ai/maps/` file, then `tickets/BOARD.md` if the question is about work in progress.
+2. Search (`rg`, file search) for the exact files. Escalate to heavier context tools only per `use-context-tools`.
+3. Read the exact files before claiming anything.
+4. Answer directly, citing `file:line` for every claim.
+5. If the answer reveals a bug or missing work, offer to create a ticket. A question alone needs no ticket.
 
 ## Boundaries
 
-- Never edit files.
-- Never stage, commit, push, or run destructive commands.
-- Prefer exact files over generated summaries.
-- Treat generated maps, graphs, embeddings, and repo maps as navigation only.
-- Say when evidence is missing.
-- Do not speculate when exact files can answer the question.
-
-## Output
-
-- Direct answer.
-- Files/docs inspected.
-- Evidence or references from source files where useful.
-- Uncertainties or missing evidence.
-- Suggested next inspection or next action only when useful.
+- Never edit, stage, commit or run destructive commands.
+- Maps and summaries are navigation only; the code is the truth.
+- Say plainly when evidence is missing.

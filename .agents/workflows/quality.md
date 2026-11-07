@@ -1,0 +1,26 @@
+# Quality
+
+QA and SDET work from the same tickets and criteria as dev, starting at the spec, not after the code.
+
+```text
+test-strategy (once, sdet)
+grill-with-docs (qa/sdet ask "how do we test this?") → to-spec (seams) → test-plan → to-tickets
+   → dev tickets (builder: tdd, names tests with criterion IDs)
+   → automation tickets (sdet: automate-tests, blocked by dev)
+   → qa tickets (qa: create/execute-manual-test-cases, blocked by dev)
+   → failures → report-bug → builder fixes → re-run
+→ test-report (go/no-go) → gate release → release-check
+```
+
+| Step | Owner | Output | Check |
+|---|---|---|---|
+| Strategy | sdet | `qa/strategy.md` | |
+| Plan | sdet + qa | `qa/plans/<feature>.md`, qa and automation tickets | |
+| Criteria IDs | whoever writes tickets | `- [ ] AC1: ...` on every dev ticket | `validate` (no duplicates) |
+| Automation | sdet | tests named `feature/NN#ACn ...`, JUnit in CI | `trace`, `test-report --junit` |
+| Manual | qa | `qa/cases/`, `qa/runs/` | `trace` reads Covers and Result |
+| Bugs | qa, sdet | `bug` tickets with severity | open S1/S2 block release |
+| Flaky | sdet | `qa/flaky.md` → `fix-flaky-tests` | |
+| Report | sdet | `qa/runs/<date>-<feature>-report.md` | `gate release` |
+
+`gate release --feature <f>` blocks when a criterion has no test or case, a criterion failed in the latest run, the latest automated run has failures, or an S1/S2 bug is open.

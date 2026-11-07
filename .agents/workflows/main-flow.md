@@ -1,0 +1,35 @@
+# Main Flow
+
+Every step works on a ticket. Every ticket closes with evidence.
+
+```text
+(existing repo) adopt-project ─┐
+(team docs)     ingest ────────┤
+                               ▼
+grill-with-docs → design* → to-spec → test-plan† → to-tickets → implement (per ticket) → release-check → pr → retro
+                                                   │  tdd → checks → code-review → update-docs → evidence
+                                                   └─ or implement-spec / loop for many tickets
+* design only when the team needs ERD, flows or API design before code
+† test-plan when the project has qa/ (see quality.md)
+```
+
+| Phase | Skill | Gate (must pass to move on) |
+|---|---|---|
+| Brainstorm | `grill-with-docs` | No open questions; glossary and ADRs updated |
+| Design | `design` | Design PR approved, recorded in the design ticket |
+| Spec | `to-spec` | `gate spec`: `AGENTS.md` goal and stack set, `GLOSSARY.md` exists |
+| Tickets | `to-tickets` | Every ticket has type, acceptance criteria, blockers |
+| Build | `implement` | `gate implement --ticket <id>`: ready, unblocked, has criteria |
+| Close ticket | `update-docs` | Evidence filled; `validate` passes |
+| Release | `release-check` | `gate release --feature <f>`: all tickets done with evidence; CI green |
+| Learn | `retro` | Accepted improvements become tickets |
+
+## Context hygiene
+
+- Keep brainstorm, design, spec and tickets in one session when they fit; they build on the same reasoning.
+- Start each `implement` in a fresh session. The ticket and its progress log carry the context.
+- At a phase boundary choose, in order: continue, clear, handoff (only if the work travels), subagent (if it can run unattended), compact.
+
+## Unattended loop
+
+`node .ai/cli/bin/cli.mjs loop --agent "<command>" --verify "<test command>"` works the frontier one ticket at a time: claim, run the agent on the `implement` skill, run checks, move to `in-review` on green, retry up to the cap, then hand to a human (`ready-for-human`). Start throttled (`--max-tickets 1`) and keep human review on every PR.

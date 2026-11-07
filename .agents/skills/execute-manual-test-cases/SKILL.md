@@ -54,3 +54,11 @@ Use the mode implied by each test case. Do not convert manual cases into automat
 - Per-case result table with ID, title, status, actual result, evidence, and notes.
 - Failure details with expected versus actual behavior.
 - Blockers, assumptions, skipped cases, and recommended follow-up.
+
+## Where runs live
+
+Write each run to `qa/runs/<date>-<feature>-<label>.md` from `qa/_templates/test-run.md`. The results table must keep the columns `Case | Covers | Result | Evidence`, with Result one of `pass`, `fail`, `blocked`, `not-run`, so `trace` can read the latest result per case. File every failure with the `report-bug` skill and link the bug in the Evidence column.
+
+## Tickets
+
+Work on a `qa` ticket. Call the Skill tool with `tickets`. Link the run file in the ticket Evidence and add a progress log entry.

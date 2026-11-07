@@ -1,0 +1,49 @@
+---
+name: next
+description: Tell the user which skill or step to run next, based on the board, the tickets, and where they are in the workflow.
+disable-model-invocation: true
+---
+
+# Next
+
+Read `tickets/BOARD.md` (or run `node .ai/cli/bin/cli.mjs status`), then answer in at most five lines: where the user is, and the one next command.
+
+## The main flow
+
+| Where you are | Next |
+|---|---|
+| New project, nothing yet | `/grill-with-docs` |
+| Existing repo, not onboarded (no `GLOSSARY.md` or maps) | `/adopt-project` |
+| Team handed you documents | `/ingest` |
+| Idea is clear, needs ERD / flows / API design | `/design` |
+| Idea or design is clear | `/to-spec` |
+| Spec exists, no test plan (`qa/` exists) | `/test-plan` |
+| Spec exists, no tickets | `/to-tickets` |
+| Tickets ready | `/implement <ticket>` (fresh session each), `/implement-spec`, or `node .ai/cli/bin/cli.mjs loop` |
+| Tickets `in-review` | `/code-review`, then merge |
+| No `qa/strategy.md` yet (`qa/` exists) | `/test-strategy` |
+| Automation tickets ready | `automate-tests` |
+| QA tickets ready | `create-manual-test-cases`, `execute-manual-test-cases` |
+| A test or run found a defect | `report-bug` |
+| CI is flaky | `fix-flaky-tests` |
+| Feature ready to ship | `test-report` |
+| All tickets of a feature done | `release-check`, then `pr`, then `/retro` |
+
+## Side roads
+
+| Situation | Skill |
+|---|---|
+| Incoming bugs or requests | `/triage` |
+| Something is broken | `diagnosing-bugs` |
+| Incident needs a report | `generate-rca` |
+| Pulled teammates' changes | `update-docs` (uses `drift`) |
+| Huge, unclear effort | `/wayfinder` |
+| Codebase feels tangled | `/improve-codebase-architecture` |
+| Need an answer from another person | `/to-questionnaire` |
+| A question about the code | `ask-repo-question` |
+| Moving work to another tool or person | `/handoff` |
+| Did not understand a message | `/wait-what` |
+| Want teaching or critique | `/mentor`, `/coach` |
+| Want to see everything available | `discover` |
+
+Before recommending a skill you are unsure of, read its `SKILL.md`.

@@ -7,7 +7,7 @@ description: Top-level reporting workflow for transforming a completed investiga
 
 ## Purpose
 
-Transform a completed investigation report into a professional Root Cause Analysis. The `technical-documentation-specialist` should lead this workflow, but the RCA must rely on evidence from the actual investigation and primary investigator.
+Transform a completed investigation report into a professional Root Cause Analysis. The `qa` or `builder` owner of the ticket runs this workflow, but the RCA must rely on evidence from the actual investigation and primary investigator.
 
 Do not investigate, speculate, or invent missing information. If the investigation does not contain a confirmed root cause, state that clearly and do not manufacture one.
 
@@ -178,3 +178,7 @@ If PDF generation fails:
 - PDF version of the RCA report.
 - PDF filename.
 - PDF file location or reference.
+
+## Tickets
+
+Work on a `qa` (or `bug`) ticket. Call the Skill tool with `tickets`. Save outputs under `docs/testing/` or the ticket folder, link them in the ticket Evidence, and add a progress log entry.

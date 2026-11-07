@@ -1,209 +1,220 @@
 {
   "$schema": "./preset.schema.json",
-  "name": "ai-project-structure-template",
-  "version": "1.0.0",
-  "defaultProfile": "fullstack",
+  "name": "engr-toolbox",
+  "version": "3.0.0",
+  "defaultTier": "medium",
   "providers": [
-    "cursor",
-    "antigravity",
     "claude",
+    "cursor",
     "codex",
-    "opencode"
+    "opencode",
+    "antigravity",
+    "copilot",
+    "windsurf",
+    "cline",
+    "kilo",
+    "aider",
+    "openhands"
   ],
-  "profiles": {
-    "fullstack": {
-      "description": "Fullstack development preset: Software Engineer, Frontend, Backend, Architect, SQA, and Docs with core SDLC skills",
+  "tiers": {
+    "small": {
+      "description": "Solo or small project: ticket workflow, test-first build, review, glossary and ADRs. No team-input or design layer.",
       "roles": [
-        "software-engineer",
-        "frontend-ui-ux-developer",
-        "backend-database-engineer",
-        "system-architect",
-        "sqa-engineer",
-        "technical-documentation-specialist"
+        "builder",
+        "reviewer"
       ],
       "skills": [
-        "plan-code-change",
-        "execute-code-change",
+        "tickets",
+        "next",
+        "grilling",
+        "grill-with-docs",
+        "to-spec",
+        "to-tickets",
+        "implement",
+        "tdd",
         "code-review",
-        "use-context-tools",
-        "write-automated-test-cases",
-        "create-manual-test-cases",
-        "execute-manual-test-cases",
-        "update-docs"
-      ],
-      "overlays": [
-        "mentor",
-        "coach"
-      ],
-      "workflows": [
-        "feature-delivery",
-        "bugfix-delivery",
-        "refactor-delivery"
-      ]
-    },
-    "general": {
-      "description": "General coding and development preset: Software Engineer and System Architect with code, review, and plan skills",
-      "roles": [
-        "software-engineer",
-        "system-architect"
-      ],
-      "skills": [
-        "ask-repo-question",
-        "plan-code-change",
-        "execute-code-change",
-        "code-review",
-        "use-context-tools"
-      ],
-      "overlays": [
-        "mentor",
-        "coach"
-      ],
-      "workflows": [
-        "feature-delivery",
-        "bugfix-delivery"
-      ]
-    },
-    "qa": {
-      "description": "SQA and test engineering preset: SQA Engineer with manual/automated testing, RCA, and release check skills",
-      "roles": [
-        "sqa-engineer"
-      ],
-      "skills": [
-        "create-manual-test-cases",
-        "execute-manual-test-cases",
-        "write-automated-test-cases",
-        "investigate-issue",
-        "generate-rca",
-        "release-check"
-      ],
-      "overlays": [
-        "coach"
-      ],
-      "workflows": [
-        "investigation-to-rca",
-        "release-readiness"
-      ]
-    },
-    "architecture": {
-      "description": "Architecture and system design preset: System Architect and Security Engineer with planning and investigation",
-      "roles": [
-        "system-architect",
-        "security-engineer"
-      ],
-      "skills": [
-        "ask-repo-question",
-        "plan-code-change",
-        "investigate-issue",
-        "use-context-tools",
-        "update-docs"
-      ],
-      "overlays": [
-        "mentor",
-        "coach"
-      ],
-      "workflows": [
-        "feature-delivery",
-        "refactor-delivery"
-      ]
-    },
-    "docs": {
-      "description": "Technical documentation preset: Technical Documentation Specialist with documentation update workflows",
-      "roles": [
-        "technical-documentation-specialist"
-      ],
-      "skills": [
-        "ask-repo-question",
-        "update-docs"
-      ],
-      "overlays": [
-        "mentor"
-      ],
-      "workflows": []
-    },
-    "all": {
-      "description": "Complete suite: all 9 roles, all 13 skills, all overlays, and all multi-role workflows",
-      "roles": [
-        "software-engineer",
-        "system-architect",
-        "product-planning-manager",
-        "frontend-ui-ux-developer",
-        "backend-database-engineer",
-        "devops-engineer",
-        "security-engineer",
-        "sqa-engineer",
-        "technical-documentation-specialist"
-      ],
-      "skills": [
-        "ask-repo-question",
-        "code-review",
-        "create-manual-test-cases",
-        "execute-code-change",
-        "execute-manual-test-cases",
-        "generate-rca",
-        "investigate-issue",
-        "plan-code-change",
-        "release-check",
-        "sync-ai-adapters",
+        "diagnosing-bugs",
         "update-docs",
-        "use-context-tools",
-        "write-automated-test-cases"
-      ],
-      "overlays": [
+        "ask-repo-question",
+        "adopt-project",
+        "domain-modeling",
+        "handoff",
+        "wait-what",
+        "mentor",
         "coach",
-        "mentor"
+        "sync-ai-adapters",
+        "prototype",
+        "codebase-design",
+        "discover",
+        "cli"
       ],
       "workflows": [
-        "bugfix-delivery",
-        "chore-delivery",
-        "feature-delivery",
+        "main-flow"
+      ],
+      "tools": [
+        "adapter-generation-policy",
+        "allowed-commands",
+        "context-policy",
+        "verification-commands",
+        "verification-policy"
+      ],
+      "playbooks": [
+        "fullstack",
+        "frontend",
+        "backend",
+        "devops",
+        "security"
+      ],
+      "scaffold": [
+        "AGENTS.md",
+        "GLOSSARY.md",
+        ".ai/context-routing.md",
+        "docs/architecture.md",
+        "docs/adr",
+        "docs/agents",
+        "tickets",
+        "ci"
+      ]
+    },
+    "medium": {
+      "extends": "small",
+      "description": "Team project: adds team inputs, design-first work, QA, triage, release checks, reference docs and context maps.",
+      "roles": [
+        "architect",
+        "qa",
+        "sdet"
+      ],
+      "skills": [
+        "ingest",
+        "design",
+        "triage",
+        "retro",
+        "pr",
+        "release-check",
+        "to-questionnaire",
+        "create-manual-test-cases",
+        "execute-manual-test-cases",
+        "generate-rca",
+        "use-context-tools",
+        "test-strategy",
+        "test-plan",
+        "automate-tests",
+        "report-bug",
+        "fix-flaky-tests",
+        "test-report"
+      ],
+      "workflows": [
+        "design-first",
+        "team-sync",
         "investigation-to-rca",
-        "refactor-delivery",
-        "release-readiness"
+        "release-readiness",
+        "quality"
+      ],
+      "tools": [
+        "context-strategy",
+        "mcp-policy"
+      ],
+      "playbooks": [
+        "architecture",
+        "qa",
+        "planning",
+        "docs",
+        "sdet"
+      ],
+      "scaffold": [
+        "docs/inputs",
+        "docs/design",
+        "docs/api",
+        "docs/database",
+        "docs/testing",
+        ".ai/maps/application-map.md",
+        ".ai/maps/service-map.md",
+        ".ai/maps/api-map.md",
+        ".ai/maps/data-map.md",
+        ".ai/maps/testing-map.md",
+        "qa"
+      ]
+    },
+    "large": {
+      "extends": "medium",
+      "description": "Large codebase or several teams: adds parallel spec builds, wayfinding for foggy efforts, architecture surveys, deployment docs and heavy context tools.",
+      "roles": [],
+      "skills": [
+        "implement-spec",
+        "wayfinder",
+        "improve-codebase-architecture"
+      ],
+      "workflows": [],
+      "tools": [
+        "aider",
+        "antigravity-adapter-note",
+        "caveman",
+        "graphify",
+        "repomix",
+        "understand-anything"
+      ],
+      "playbooks": [],
+      "scaffold": [
+        "docs/deployment",
+        ".ai/maps/deployment-map.md",
+        ".ai/index"
       ]
     }
   },
+  "newProjectScaffold": [
+    "application",
+    "service",
+    "shared",
+    "tests"
+  ],
   "contextRules": {
     "requiredCore": [
       {
         "file": "AGENTS.md",
         "checks": [
-          { "pattern": "\\[State the project goal here\\.\\]", "invert": true, "message": "Project goal not set in AGENTS.md" },
-          { "pattern": "\\[Runtime or framework\\]", "invert": true, "message": "Tech stack not specified in AGENTS.md" }
+          {
+            "pattern": "\\[State the project goal here\\.\\]",
+            "invert": true,
+            "message": "Project goal not set in AGENTS.md"
+          },
+          {
+            "pattern": "\\[Runtime or framework\\]",
+            "invert": true,
+            "message": "Tech stack not set in AGENTS.md"
+          }
         ]
       },
       {
-        "file": "docs/tdd/tdd.md",
-        "checks": [
-          { "pattern": "> Status: NOT_STARTED", "invert": true, "message": "docs/tdd/tdd.md is NOT_STARTED" }
-        ]
+        "file": "GLOSSARY.md",
+        "checks": []
       },
       {
-        "file": "docs/project-structure/project-structure.md",
+        "file": "docs/architecture.md",
         "checks": [
-          { "pattern": "> Status: NOT_STARTED", "invert": true, "message": "docs/project-structure/project-structure.md is NOT_STARTED" }
+          {
+            "pattern": "> Status: NOT_STARTED",
+            "invert": true,
+            "message": "docs/architecture.md is NOT_STARTED"
+          }
         ]
       }
     ],
     "conditionalTasks": {
       "api": {
         "file": "docs/api/api-specification.md",
-        "name": "API specification",
-        "roles": ["backend-database-engineer", "software-engineer"]
+        "name": "API specification"
       },
       "database": {
         "file": "docs/database/data-model.md",
-        "name": "Data model specification",
-        "roles": ["backend-database-engineer"]
+        "name": "Data model"
       },
       "deployment": {
         "file": "docs/deployment/deployment.md",
-        "name": "Deployment configuration",
-        "roles": ["devops-engineer"]
+        "name": "Deployment guide"
       },
       "testing": {
         "file": "docs/testing/test-specification.md",
-        "name": "Testing specification",
-        "roles": ["sqa-engineer"]
+        "name": "Test specification"
       }
     }
   }

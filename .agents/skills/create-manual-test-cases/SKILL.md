@@ -57,3 +57,11 @@ If the user does not specify a mode, default to `functional` and include relevan
 - Manual test cases created or updated.
 - Assumptions, open questions, and coverage gaps.
 - Any files changed, or the recommended target file if no file was written.
+
+## Where cases live
+
+Default template: `qa/_templates/test-case.md`. One file per case: `qa/cases/<feature>/TC-NN-<slug>.md`, with a `**Covers:**` line listing the acceptance criteria IDs it tests (`cart/01#AC1, cart/01#AC2`), a `**Priority:**` (P1 to P3) and an `**Automate:**` line (`yes`, `no`, or the automated test name once it exists). `node .ai/cli/bin/cli.mjs trace` reads the Covers lines.
+
+## Tickets
+
+Work on a `qa` ticket. Call the Skill tool with `tickets`. Link the cases in the ticket Evidence and add a progress log entry.

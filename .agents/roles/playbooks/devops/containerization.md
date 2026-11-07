@@ -31,7 +31,7 @@ Procedure:
 2. Model the smallest infrastructure change needed with clear inputs, outputs, and dependencies.
 3. Keep environments isolated appropriately and avoid hidden manual steps outside IaC.
 4. Plan apply order, rollback considerations, and verification after provisioning changes.
-5. Coordinate with Security Engineer for IAM, network exposure, or secrets-related infrastructure.
+5. Coordinate with the reviewer (security) for IAM, network exposure, or secrets-related infrastructure.
 
 Guardrails:
 - Do not apply production infrastructure changes without explicit approval.

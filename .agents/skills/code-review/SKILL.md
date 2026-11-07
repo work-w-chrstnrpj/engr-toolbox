@@ -1,28 +1,21 @@
 ---
 name: code-review
-description: Review changed code for correctness, architecture, security, contracts, tests, and maintainability.
+description: Review changes since a fixed point on two separate axes, Standards and Spec, using parallel fresh subagents. Use when reviewing a branch, PR, or work in progress, or when the user asks to review since a commit.
 ---
 
 # Code Review
 
-## Workflow
+## Steps
 
-1. Read `AGENTS.md` and the current diff.
-2. Inspect exact changed files and nearby source.
-3. Check correctness, architecture boundaries, security, API/data contracts, type safety, error handling, tests, and maintainability.
-4. Prioritize concrete bugs and risks over style preferences.
-5. Report findings first, ordered by severity, with file and line references where possible.
-
-## Boundaries
-
-- Do not make changes unless explicitly asked.
-- Do not flag speculative issues without a plausible failure scenario.
-- Do not bury important findings under summaries.
+1. **Pin the fixed point** (commit, branch, tag, `main`). Ask if not given. Confirm it resolves and `git diff <point>...HEAD` is not empty.
+2. **Find the spec:** ticket IDs in commit messages, a path the user gave, `tickets/<feature>/spec.md`. If none, the Spec axis reports "no spec".
+3. **Find the standards:** `CODING_STANDARDS.md`, `CONTRIBUTING.md`, `AGENTS.md`, linter configs, ADRs in the touched area.
+4. **Run two subagents in parallel, each with a fresh context**:
+   - **Standards:** does the diff follow the repo's documented standards? Also check this baseline of smells unless the repo says otherwise: duplicated code, long function, long parameter list, shotgun surgery, feature envy, primitive obsession, speculative generality, dead code, misleading names, comments explaining unclear code instead of fixing it.
+   - **Spec:** does the diff do what the ticket and spec ask, all acceptance criteria, nothing out of scope? Does it follow ADRs, and does any superseded ADR still shape the code?
+5. Also flag: decisions in the diff with no ADR, and paths in `.ai/maps/` that the diff made wrong.
+6. **Report** side by side, most severe first. Each finding: file and line, what is wrong, why it matters, suggested fix. Refactoring suggestions belong here.
 
 ## Output
 
-- Relevant files or docs inspected.
-- Work completed or plan produced.
-- Tests or verification run or recommended.
-- Docs updated or skipped with reason.
-- Remaining risks, assumptions, and handoffs.
+Write a short summary into the ticket's Evidence `Review:` line.

@@ -1,0 +1,19 @@
+---
+name: discover
+description: Show what this project has installed: skills, roles, workflows, docs and their status, folder structure, and CLI commands. Use when the user asks what skills, roles, workflows or docs exist, how something is used, or where to find it.
+---
+
+# Discover
+
+The same output the terminal gives with `--help-discover-<topic>`, run for the user inside the coding agent.
+
+## Steps
+
+1. Map the request to a topic: `skills` (also "skillset"), `roles`, `workflows`, `docs`, `structure`, `commands`, or `all` when unclear.
+2. Run it and show the output as is:
+   - `node .ai/cli/bin/cli.mjs discover <topic>`
+   - Filter: add `--search <word>` ("anything about flaky tests" → `discover skills --search flaky`).
+   - One item: `node .ai/cli/bin/cli.mjs discover <skill|role|workflow> <name>`.
+3. Add at most two lines: which item fits what the user is trying to do, and how to start it (`/name` in Claude Code, ask by name in Codex). For "what do I do next", use `/next` instead.
+
+If the CLI is missing (no `.ai/cli/`), read `.agents/skills/README.md`, `.agents/roles/README.md` and `.agents/workflows/README.md` instead.

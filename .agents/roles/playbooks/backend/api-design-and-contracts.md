@@ -9,13 +9,13 @@ Procedure:
 1. Inspect existing API style, versioning, naming, serialization, auth middleware, and documented contracts.
 2. Identify consumers, trust boundaries, and compatibility constraints for the proposed surface.
 3. Define request validation, response shape, error model, and auth requirements consistent with existing APIs.
-4. Coordinate breaking changes with Frontend UI/UX Developer and Technical Documentation Specialist.
+4. Coordinate breaking changes with the builder and update-docs.
 5. Document contract notes and add API or contract tests for the new or changed surface.
 
 Guardrails:
 - Do not invent endpoint paths, field names, or status conventions without checking project contracts.
 - Do not expose internal models directly when the project uses DTO or schema layers.
-- Escalate public or sensitive API expansions to Security Engineer when auth scope changes.
+- Escalate public or sensitive API expansions to the reviewer (security) when auth scope changes.
 
 Output:
 - Endpoint or handler design aligned with project conventions.
@@ -39,7 +39,7 @@ Procedure:
 Guardrails:
 - Do not silently break clients or remove fields without a migration or deprecation plan.
 - Do not change auth requirements without explicit coordination and review.
-- Escalate breaking public API changes to Product & Planning Manager and Security Engineer when scope or risk is unclear.
+- Escalate breaking public API changes to the architect when scope or risk is unclear.
 
 Output:
 - Compatibility assessment and chosen migration approach.
@@ -57,13 +57,13 @@ Procedure:
 1. Read existing API test patterns, fixtures, auth setup, and verification commands in the repo.
 2. Identify endpoints, status codes, validation failures, auth cases, and edge inputs that must be covered.
 3. Implement or extend automated API or integration tests using project conventions.
-4. Coordinate with SQA Engineer on manual cases, regression scope, or environments when needed.
+4. Coordinate with qa on manual cases, regression scope, or environments when needed.
 5. Run relevant test commands and report gaps, flakes, or environment blockers.
 
 Guardrails:
 - Do not claim API behavior is verified without running or reliably reporting tests.
 - Do not hardcode secrets, production URLs, or unstable external dependencies in tests.
-- Escalate missing test infrastructure or environment setup to DevOps Engineer.
+- Escalate missing test infrastructure or environment setup to the builder (DevOps).
 
 Output:
 - Automated API or integration tests for critical paths and failures.
