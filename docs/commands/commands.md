@@ -39,6 +39,17 @@ Install or upgrade. Interactive in a terminal; `--yes` uses flags, then saved ch
 
 Writes `.agents/` (managed), the tier's scaffold (project-owned, created once), `.ai/cli/`, `engr-toolbox.json`, and adapters. `--force` overwrites project-owned files. `<tool>` alone (for example `claude`) is shorthand for `init --yes --tools <tool>`.
 
+## update
+
+Upgrade a project to the latest engr-toolbox. Keeps your saved choices (size, tools, tracker), refreshes files the toolbox owns, leaves files you edited alone.
+
+| Command | Does |
+|---|---|
+| `update --check` | Report installed vs latest version. Exit code 1 when stale, so CI can fail on it |
+| `update` | Upgrade. From a project's pinned copy it fetches the latest first. `--dry-run` previews, `--force` refreshes even when current |
+
+`status` and `validate` print a one-line warning when the install is behind (checked at most once a day, skipped in CI and offline). Turn it off with `ENGR_NO_UPDATE_CHECK=1`.
+
 ## status
 
 Board in the terminal. `--write` rewrites `tickets/BOARD.md`. `--feature <f>` filters. `--json` prints parsed tickets.

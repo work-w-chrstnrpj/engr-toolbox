@@ -24,6 +24,7 @@ The user never needs to type a command. Run it for them: `node .ai/cli/bin/cli.m
 | "Record these test results" | `test-report --junit <path> --feature cart --ticket cart/03 --write` |
 | "What did teammates change?" | `drift` · `drift --mark` |
 | "Is everything consistent?" | `validate` · `validate --task api` |
+| "Is my engr-toolbox out of date?" / "Update it" | `update --check` / `update` (upgrades files; confirm first) |
 | "Do my commits reference tickets?" | `check-commits --range origin/main..HEAD` |
 | "Set up CI / releases" | `pipeline` (or run `/setup-pipeline` for per-branch steps) |
 | "What version would be released?" | `release-version` · `release-notes` |

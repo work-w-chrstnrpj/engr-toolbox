@@ -10,7 +10,7 @@ Work exactly one ticket, in a fresh session. The ticket is not done until `gate 
 
 ## 1. Start
 
-1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous) and state its title.
+1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous) and state its title. If the user described a change and no ticket covers it, follow "Request with no ticket" there: draft, confirm, write the ticket, then continue. If they change the requirements mid-way, follow "Requirements change mid-ticket": update this ticket and its log first.
 2. `node .ai/cli/bin/cli.mjs gate implement --ticket <id>`. If blocked, stop and report.
 3. Claim it: status `in-progress`, progress log entry.
 4. Read its inputs: spec, ADRs, designs, `GLOSSARY.md`, the relevant `.ai/maps/`.

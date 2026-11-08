@@ -14,6 +14,8 @@ import { runGate } from '../lib/gates.mjs';
 import { detectDrift, formatDrift, markSyncPoint } from '../lib/drift.mjs';
 import { checkCommits } from '../lib/commits.mjs';
 import { runLoop } from '../lib/loop.mjs';
+import { installedVersion, versionState, compareVersions, fetchLatestVersion, staleNotice } from '../lib/update.mjs';
+import { guardEdit, guardPrompt, guardCommitMsg } from '../lib/guard.mjs';
 import { readJUnit, recordRun, loadHistory, findFlaky, writeFlaky, writeRunSummary, summarise, buildTrace, formatTrace, writeTrace } from '../lib/qa.mjs';
 import { git } from '../lib/git.mjs';
 import { scanInputs, addInputs, formatInputs, listInputs } from '../lib/inputs.mjs';
@@ -48,6 +50,8 @@ Commands:
                        --to <subfolder> --owner <name> --version <v> --dry-run (changed files keep the old version)
   drift                Changes since the last sync    --since <ref>   --mark (save HEAD as sync point)
   validate             Structure, tickets, ADRs, map paths, context   --task <api|database|deployment|testing>
+  update               Upgrade this project to the latest engr-toolbox   --check (report only, exit 1 if stale)   --dry-run
+  guard <prompt|edit|commit-msg>   Hook entry points: block edits and commits with no ticket (ENGR_GUARD=block|warn|off)
   check-commits        Every commit references a ticket   --range <base>..<head>
   trace                Acceptance criteria → manual cases → automated tests   --feature <f> --write --strict
   test-report          Read JUnit XML results   --junit <file|dir> --feature <f> --ticket <f/NN> --label <name> --write
@@ -272,6 +276,59 @@ function cmdCheckCommits(flags, targetDir) {
   }
 }
 
+function cmdGuard(args, targetDir) {
+  const kind = args[0];
+  let input = {};
+  if (kind !== 'commit-msg') {
+    try { input = JSON.parse(fs.readFileSync(0, 'utf8') || '{}'); } catch { input = {}; }
+  }
+  const root = input.cwd && fs.existsSync(path.join(input.cwd, 'tickets')) ? input.cwd : targetDir;
+  const r = kind === 'prompt' ? guardPrompt(root, input)
+    : kind === 'edit' ? guardEdit(root, input)
+    : kind === 'commit-msg' ? guardCommitMsg(root, args[1])
+    : (() => { throw new Error('Usage: guard <prompt|edit|commit-msg>'); })();
+  if (r.stdout) console.log(r.stdout);
+  if (r.stderr) console.error(r.stderr);
+  process.exit(r.exit);
+}
+
+async function cmdUpdate(flags, targetDir) {
+  const installed = installedVersion(targetDir);
+  if (!installed) throw new Error('No engr-toolbox install found here. Install with:\n  ' + UPSTREAM_INSTALL + ' init');
+  const hasPayload = fs.existsSync(path.join(templateRoot, 'template'));
+  const latest = hasPayload ? loadConfig(templateRoot).version : await fetchLatestVersion();
+  const state = versionState(installed, latest);
+  if (flags.check) {
+    if (state === 'unknown') {
+      console.log(`Installed ${installed}. Could not read the latest version (offline?).`);
+    } else if (state === 'stale') {
+      console.error(`✖ Installed ${installed}, latest ${latest}. Run: engr update`);
+      process.exit(1);
+    } else {
+      console.log(`✔ Installed ${installed}${state === 'ahead' ? ` (newer than published ${latest})` : ', up to date'}.`);
+    }
+    return;
+  }
+  if (!hasPayload) {
+    // The project's pinned copy cannot upgrade itself; fetch the latest and let it do the work.
+    console.log(`Installed ${installed}. Fetching the latest engr-toolbox to upgrade...`);
+    const r = spawnSync('npx', ['--allow-git=all', 'github:work-w-chrstnrpj/engr-toolbox', 'update', ...(flags['dry-run'] ? ['--dry-run'] : []), '--into', targetDir], { stdio: 'inherit' });
+    process.exit(r.status ?? 1);
+  }
+  if (compareVersions(installed, latest) >= 0 && !flags.force) {
+    console.log(`✔ Already up to date (${installed}). Use --force to refresh the files anyway.`);
+    return;
+  }
+  console.log(`Upgrading ${installed} → ${latest}. Your saved choices are kept; files you edited are left alone.`);
+  await cmdInit({ ...flags, yes: true }, targetDir);
+}
+
+async function notice(flags, targetDir) {
+  if (flags.json) return;
+  const n = await staleNotice(targetDir);
+  if (n) console.error(`\n⚠ ${n}`);
+}
+
 function cmdTrace(flags, targetDir) {
   const trace = buildTrace(targetDir, { feature: flags.feature });
   console.log(formatTrace(trace));
@@ -359,7 +416,7 @@ function cmdLoop(flags, targetDir) {
 function delegateToProjectCli(argv) {
   if (process.env.ENGR_NO_DELEGATE) return false;
   const parsed = parseArgs(argv);
-  if (parsed.command === 'init' && !Object.keys(parsed.flags).some(f => f.startsWith('help'))) return false;
+  if ((parsed.command === 'init' || (parsed.command === 'update' && !parsed.flags.check)) && !Object.keys(parsed.flags).some(f => f.startsWith('help'))) return false;
   const projectRoot = path.resolve(parsed.flags.into || process.cwd());
   const projectCli = path.join(projectRoot, '.ai', 'cli', 'bin', 'cli.mjs');
   if (!fs.existsSync(projectCli)) return false;
@@ -390,11 +447,13 @@ async function main() {
     case 'init': return cmdInit(flags, targetDir);
     case 'sync': return cmdSync(flags, targetDir);
     case 'uninstall': return cmdUninstall(flags, targetDir);
-    case 'validate': return cmdValidate(flags, targetDir);
-    case 'status': return cmdStatus(flags, targetDir);
+    case 'update': return cmdUpdate(flags, targetDir);
+    case 'validate': cmdValidate(flags, targetDir); return notice(flags, targetDir);
+    case 'status': cmdStatus(flags, targetDir); return notice(flags, targetDir);
     case 'gate': return cmdGate(args, flags, targetDir);
     case 'drift': return cmdDrift(flags, targetDir);
     case 'check-commits': return cmdCheckCommits(flags, targetDir);
+    case 'guard': return cmdGuard(args, targetDir);
     case 'loop': return cmdLoop(flags, targetDir);
     case 'trace': return cmdTrace(flags, targetDir);
     case 'inputs': return cmdInputs(args, flags, targetDir);

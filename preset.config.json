@@ -1,7 +1,7 @@
 {
   "$schema": "./preset.schema.json",
   "name": "engr-toolbox",
-  "version": "3.4.0",
+  "version": "0.1.0",
   "defaultTier": "medium",
   "providers": [
     "claude",
@@ -26,6 +26,7 @@
       "skills": [
         "tickets",
         "next",
+        "ask-engr",
         "grilling",
         "grill-with-docs",
         "to-spec",
@@ -36,6 +37,7 @@
         "diagnosing-bugs",
         "update-docs",
         "ask-repo-question",
+        "research",
         "adopt-project",
         "domain-modeling",
         "handoff",
@@ -51,6 +53,7 @@
       ],
       "workflows": [
         "main-flow",
+        "scenarios",
         "release"
       ],
       "tools": [
