@@ -4,7 +4,7 @@
 
 Several workflow skills in `.agents/skills/` are adapted from [mattpocock/skills](https://github.com/mattpocock/skills) (upstream commit `4ae2317ddb22`, November 2026). They were rewritten for this project's ticket, evidence and team-input model; they are marked ★ in `.agents/skills/README.md`.
 
-Adapted: `grilling`, `grill-with-docs`, `to-spec`, `to-tickets`, `implement`, `implement-spec`, `tdd`, `code-review`, `diagnosing-bugs`, `triage`, `retro`, `pr`, `prototype`, `handoff`, `to-questionnaire`, `domain-modeling`, `codebase-design`, `wayfinder`, `improve-codebase-architecture`. The re-explain mode of `mentor` is adapted from `wait-what`. Ideas also adapted: the GLOSSARY.md and ADR conventions, the local markdown ticket format, triage states, phase boundaries, and the "brakes" for unattended loops.
+Adapted: `grilling`, `grill-with-docs`, `to-spec`, `to-tickets`, `implement`, `implement-spec`, `tdd`, `code-review`, `diagnosing-bugs`, `triage`, `retro`, `pr`, `prototype`, `handoff`, `to-questionnaire`, `domain-modeling`, `codebase-design`, `wayfinder`, `improve-codebase-architecture`, `research`, and `ask-engr` (from `ask-matt`). The re-explain mode of `mentor` is adapted from `wait-what`. Ideas also adapted: the GLOSSARY.md and ADR conventions, the local markdown ticket format, triage states, phase boundaries, and the "brakes" for unattended loops.
 
 ```
 MIT License

@@ -1,0 +1,48 @@
+---
+name: ask-engr
+description: Ask which skill or flow fits your situation, and get the flows explained. A router over the skills installed in this project.
+disable-model-invocation: true
+---
+
+# Ask Engr
+
+For when you do not remember every skill. `/next` gives the one next step from the board; this explains the options and the flows around it.
+
+Before stating what a skill does or recommending that a step be skipped, read that skill's `SKILL.md`. The summaries here are for orientation only. List what is installed with `node .ai/cli/bin/cli.mjs discover skills`, and use the **Which skill when** tables in `.agents/skills/README.md` as the only routing source; do not answer from a remembered list.
+
+A **flow** is a path through the skills. Most work follows one **main flow**; a few **on-ramps** merge onto it. Everything else is standalone.
+
+## Main flow: idea → ship
+
+1. `/grill-with-docs` sharpens the idea by interview and records terms and decisions. (Team documents first? `/ingest`. Existing repo? `/adopt-project`.)
+2. A question that only running code can answer: `prototype`, then bring the answer back.
+3. Design first, if the team wants it: `/design`.
+4. `/to-spec` turns the thread into a spec. With a `qa/` folder, `/test-plan` next.
+5. `/to-tickets` splits it into thin tickets with blockers.
+6. Build: `/implement <ticket>` (fresh session each) or `/implement-spec` (all in parallel). Both drive `tdd` and end in `code-review`.
+7. QA and automation tickets: `manual-testing`, `automate-tests`. Numbers for go/no-go: `test-report`.
+8. Ship: `/cut-release`.
+9. `/retro` after a feature or a bad session.
+
+## On-ramps
+
+- Incoming bugs and requests from others: `/triage`, which produces agent-ready tickets.
+- A huge, foggy effort: `/wayfinder` makes decision tickets, then hands off to `/to-spec`.
+- A defect found while testing: `report-bug`. Cause unclear: `diagnosing-bugs`.
+
+## Standalone
+
+- A question about our code, no edits: `ask-repo-question`.
+- A question about the outside world (docs, specs, APIs), findings saved to a file: `research`.
+- An answer only another person has: `/to-questionnaire`.
+- Moving work to another tool or person: `/handoff`.
+- A message did not land: `/mentor that`. Want critique: `/coach`.
+- Docs fell behind the code: `update-docs`. Workflow commands and board: `cli`.
+
+## Context hygiene
+
+Keep grilling, spec and tickets in one unbroken session so they build on the same thinking. Start each `/implement` fresh from its ticket. Run `/retro` in the session it reviews, before you clear it.
+
+## Answer
+
+Match the user's situation to one row, name the skill, say why, and mention the next one after it. At most eight lines unless they ask for the full flow.

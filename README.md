@@ -24,7 +24,7 @@ engr-toolbox is **four things that work together**:
 
 | | Part | What it gives you | Where it lives |
 |---|---|---|---|
-| 🧠 | **Skillset** | 40 reusable steps the agent runs: brainstorm, design, spec, tickets, build test-first, review, test, release | `.agents/skills/` |
+| 🧠 | **Skillset** | 42 reusable steps the agent runs: brainstorm, design, spec, tickets, build test-first, review, test, release | `.agents/skills/` |
 | 🔁 | **Workflow** | The order of those steps, from idea to release, with a gate before each phase | `.agents/workflows/` |
 | 🗂️ | **Structure** | Fixed places for context: glossary, decisions, team documents, designs, maps, tests, tickets | `docs/`, `qa/`, `tickets/`, `.ai/` |
 | 👥 | **Roles** | Five owners, one per kind of ticket: architect, builder, reviewer, QA (Quality Assurance), SDET (Software Development Engineer in Test) | `.agents/roles/` |

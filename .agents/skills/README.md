@@ -29,6 +29,7 @@ Skills marked **you** run only when you type them (`/name`); they orchestrate. S
 | Situation | Run |
 |---|---|
 | Unsure what to do next | `/next` |
+| Unsure which skill or flow fits, want the options explained | `/ask-engr` ★ |
 | Want to see what is installed, or run a workflow command | `cli` (`/cli status`, `/cli discover skills`) |
 | Incoming bugs or requests from others | `/triage` ★ |
 | Something is broken and the cause is not obvious | `diagnosing-bugs` ★ |
@@ -44,6 +45,7 @@ Skills marked **you** run only when you type them (`/name`); they orchestrate. S
 | A design question needs running code | `prototype` ★ |
 | You need an answer from another person | `/to-questionnaire` ★ |
 | A question about the code, no changes | `ask-repo-question` |
+| A question about docs, specs or APIs outside the repo, findings saved to a file | `research` ★ |
 | Moving work to another tool or person | `/handoff` ★ |
 | Didn't understand a message, or want teaching | `/mentor` (`/mentor that` re-explains the last message) |
 | Want critique | `/coach` |
@@ -82,10 +84,12 @@ Skills marked **you** run only when you type them (`/name`); they orchestrate. S
 | `prototype` ★ | Throwaway code for one question | auto | architect, builder |
 | `update-docs` | Keep facts current, flag decisions | auto | builder |
 | `ask-repo-question` | Answer questions, no edits | auto | all |
+| `research` ★ | Investigate primary sources, save cited findings to a file | auto | all |
 | `use-context-tools` | When to use heavier context tools | auto | all |
 | `generate-rca` | Formal RCA (Root Cause Analysis) from a finished investigation | auto | qa, builder |
 | `cli` | Run workflow commands, discover what is installed, regenerate tool files | auto | all |
 | `next` | Read the board and this table, give the one next step | you | all |
+| `ask-engr` ★ | Router: which skill or flow fits, and the flows explained | you | all |
 | `wayfinder` ★ | Map a huge, unclear effort as decision tickets | you | architect |
 | `improve-codebase-architecture` ★ | Find deepening opportunities | you | architect |
 | `handoff` ★ | Portable summary for another tool or person | you | all |

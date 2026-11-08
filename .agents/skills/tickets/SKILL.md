@@ -77,6 +77,27 @@ Number every criterion `AC1`, `AC2`, ... and never renumber. Tests and manual ca
 
 design → architect · dev, bug → builder · automation → sdet · qa → qa · review → reviewer · doc-drift → builder · release → whoever cuts it (`/cut-release`)
 
+## Request with no ticket
+
+When the user describes a change and asks to implement it, but no ticket covers it, do not start. Say: "This needs a ticket first so the change is recorded."
+
+1. Draft the ticket from their words: feature folder, title, `Type`, 2 to 5 numbered criteria (`AC1`...), and a one-line "What to build". Reuse an existing feature folder when it fits; otherwise pick a short kebab-case one.
+2. Show it and ask for a go-ahead. Their yes covers the criteria.
+3. Write `tickets/<feature>/NN-slug.md` (next free number), set `in-progress`, add the first progress log entry quoting the request, then continue with `implement`.
+
+This works with or without `grill-with-docs` → `to-spec` → `to-tickets`. Never write code before the ticket exists. Trivial housekeeping may use `[no-ticket]`.
+
+## Requirements change mid-ticket
+
+When the user changes their mind while a ticket is `in-progress`, change that ticket, not a new one and not the code alone:
+
+1. Edit the ticket first: add, reword or drop criteria. Never renumber; mark a dropped one `- [ ] ~~AC2: ...~~ dropped: <reason>`, and give a new one the next `ACn`.
+2. Log a `Requirement change` entry in the progress log: date, what changed, why, what was dropped.
+3. Then change the code and tests to match. Re-run the criterion tests that were affected.
+4. If the change is a different job (a new feature, not a reshaping of this one), say so and create a separate ticket; if it contradicts an ADR, update or supersede the ADR (`domain-modeling`).
+
+The ticket then reads as the full history of what was asked and why it ended up as it did.
+
 ## Rules
 
 1. **Claim before work.** Set `in-progress`, add a progress log entry, save, then start.

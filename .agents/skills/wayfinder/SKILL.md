@@ -12,7 +12,7 @@ For work too big and unclear for one grilling session. It produces **decisions, 
 
 1. Create `tickets/<effort>/map.md` with three sections: **Destination** (what done looks like), **Decisions so far** (links), **Fog** (open questions).
 2. Turn each open question into a **decision ticket** (`Type: research | prototype | grilling | task`) with blockers, using the `tickets` format.
-3. Work the frontier one ticket at a time: claim, answer it (research, prototype, or call the Skill tool with `grilling`), write the answer under `## Answer`, record an ADR if hard to reverse, mark `done`, add a one-line pointer to the map.
+3. Work the frontier one ticket at a time: claim, answer it (call the Skill tool with `research`, `prototype` or `grilling`), write the answer under `## Answer`, record an ADR if hard to reverse, mark `done`, add a one-line pointer to the map.
 4. New questions become new decision tickets.
 5. When the fog is gone, stop. Hand off to `/to-spec`, which turns the map's decisions into a buildable spec, then `/to-tickets`.
 
