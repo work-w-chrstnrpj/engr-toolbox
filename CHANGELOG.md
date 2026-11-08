@@ -6,6 +6,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-08
+
+Adds a human-in-the-loop way to build a ticket, and a defined commit format for `implement`.
+
+### Added
+
+- `cook-a-ticket` skill: makes a ticket's code change without committing, with combinable modifiers `[taste-test-review-serve]` (`serve` commits with an optional `gist:` in the message body and closes the ticket) and a follow-up `[season]` that changes the ticket in hand. Added to the `scenarios` workflow as the human-in-the-loop path.
+
+### Changed
+
+- `implement` names the commit message format (`<type>: <summary> [<ticket>]` with `feat`, `fix`, `refactor`, `test`, `docs`, `chore`) and leaves the ticket file and `BOARD.md` uncommitted.
+
 ## [0.1.0] - 2026-11-08
 
 First release of engr-toolbox: a ticket-driven engineering workflow for AI coding agents. Skills and roles the agent runs, a fixed project structure, and a zero-dependency Node CLI that checks the rules instead of hoping the agent follows them.
