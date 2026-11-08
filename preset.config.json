@@ -1,7 +1,7 @@
 {
   "$schema": "./preset.schema.json",
   "name": "engr-toolbox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "defaultTier": "medium",
   "providers": [
     "claude",
@@ -32,6 +32,7 @@
         "to-spec",
         "to-tickets",
         "implement",
+        "cook-a-ticket",
         "tdd",
         "code-review",
         "diagnosing-bugs",

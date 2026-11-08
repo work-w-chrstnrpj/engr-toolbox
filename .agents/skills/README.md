@@ -17,7 +17,7 @@ Skills marked **you** run only when you type them (`/name`); they orchestrate. S
 | Idea or design is clear | `/to-spec` ★ |
 | Spec exists, project has `qa/`, no test plan yet | `/test-plan` |
 | Spec (and test plan) exist, no tickets | `/to-tickets` ★ |
-| Tickets are ready | `/implement <ticket>` ★ (fresh session each), `/implement-spec` ★ (all in parallel), or `/cli loop` (unattended) |
+| Tickets are ready | `/implement <ticket>` ★ (fresh session each), `/cook-a-ticket [taste-test-review-serve] <ticket>` (build in steps you pick, uncommitted until `serve`), `/implement-spec` ★ (all in parallel), or `/cli loop` (unattended) |
 | Automation tickets are ready | `automate-tests` |
 | QA (Quality Assurance) tickets are ready | `manual-testing` |
 | Tickets are `in-review` | `code-review` ★, then merge |
@@ -64,6 +64,7 @@ Skills marked **you** run only when you type them (`/name`); they orchestrate. S
 | `to-tickets` ★ | Thin end-to-end tickets with blockers | you | architect |
 | `triage` ★ | Move incoming issues through the ticket states | you | all |
 | `implement` ★ | One ticket to full delivery: tests per criterion, checks, review, docs, evidence | you | builder |
+| `cook-a-ticket` | Make a ticket's code change, then add what you want with modifiers: `taste` (summary), `test`, `review`, `serve` (validate, commit with an optional gist, close the ticket), `season` (change the ticket in hand) | you | builder |
 | `implement-spec` ★ | All tickets of a spec in parallel on one branch | you | builder |
 | `automate-tests` | UI (user interface), API, contract and integration automation traced to criteria | auto | sdet |
 | `manual-testing` | Write and run manual cases with evidence | auto | qa |

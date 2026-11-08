@@ -23,11 +23,34 @@ Every flow ends the same way: work lives on a ticket, the ticket ends with evide
 | Small change (one ticket) | Ask for it. The agent says a ticket is needed first, drafts it, you confirm, then it implements |
 | Asked to implement with no ticket | Never start coding. Draft the ticket from the request, get a go-ahead, write it as `in-progress`, then implement (`tickets` skill, "Request with no ticket") |
 | Requirements change mid-ticket | Edit that ticket's criteria first, log a "Requirement change" entry, then change code and tests. Different job? New ticket. Contradicts an ADR (Architecture Decision Record)? Supersede it with `/domain-modeling` |
+| Want to stay in control (human in the loop) | `/cook-a-ticket [taste-test-review] <ticket>`: it makes the change uncommitted and shows a plain summary first. You choose what runs next, change your mind with `[season]`, and commit only when you say `[serve]` (see below) |
 | Whole spec, many tickets | `/implement-spec` (integration branch, parallel subagents) or `loop` for unattended runs |
 | Unsure the design works | `/prototype` to answer one question, throw the prototype away, record the answer in the ticket or an ADR |
 | Hard-to-reverse choice appears while building | Stop, ask, record an ADR with `/domain-modeling`, link it in the ticket's Inputs |
 | Code is tangled or tests are hard to write | `/improve-codebase-architecture` → tickets for the deepening work |
 | Team must approve design before code | Design ticket → `/design` → review → dev tickets unblocked (workflow `design-first`) |
+
+### Human in the loop: `cook-a-ticket`
+
+`/implement` runs on its own: it loops until the gate passes and commits as it goes. `/cook-a-ticket` is for people who want to steer. Cook only makes the code change from a ticket, uncommitted. Add modifiers for the rest, in brackets, in any order:
+
+| Modifier | Adds |
+|---|---|
+| `taste` | A high-level summary (not a diff), then asks "Want to dig deeper?" and shows the diff if yes |
+| `test` | Tests for each acceptance criterion, written and run |
+| `review` | `code-review` on the uncommitted changes |
+| `serve` | Checks every criterion is met, commits with a proper message (add `gist: ...` for the body), and closes the ticket |
+| `season` | A follow-up on the ticket in hand: you tried it and want it different. Edits the ticket, then the code |
+
+A typical session:
+
+```text
+/cook-a-ticket [taste-test-review] orders/03     build it, test it, review it, show me
+/cook-a-ticket [season] also include totals       change my mind after looking
+/cook-a-ticket [test-serve] gist: includes totals  prove it, commit, close
+```
+
+Use `/implement` when you want it delivered unattended or in a loop; use `/cook-a-ticket` when you want to see and decide at each step. It is not for `/cli loop` or `/implement-spec`.
 
 ## Fixing
 

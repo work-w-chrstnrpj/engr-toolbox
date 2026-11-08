@@ -33,7 +33,7 @@ Repeat until every line passes:
 1. Run the verification commands in `AGENTS.md`: typecheck, the single test files often, then the **full suite**.
 2. Call the Skill tool with `code-review` against the merge-base. Fix every finding at or above "should fix"; note the rest.
 3. Call the Skill tool with `update-docs` for what this ticket changed.
-4. Commit with the ticket ID in the message. Record Evidence: commit SHAs, test command and result, review summary, docs updated.
+4. Commit the code and tests with a conventional message: `<type>: <summary> [<ticket>]`, for example `feat: add export [orders/03]`. Type is one of `feat` (new behaviour), `fix` (bug), `refactor`, `test`, `docs`, `chore`; summary is short, imperative and lowercase. Do not commit the ticket file or `BOARD.md`; leave them for the user. Record Evidence: commit SHAs, test command and result, review summary, docs updated.
 5. Run `node .ai/cli/bin/cli.mjs gate deliver --ticket <id>`. It checks: every criterion ticked, every criterion named by an automated test, no open blockers, Commits and Tests evidence present.
 
 If anything fails, fix it and go round again. Never weaken an assertion, skip a test, or tick a criterion to get green. After **three full rounds** that still fail for the same reason, stop: write what is failing and why in the progress log, set `ready-for-human`.
