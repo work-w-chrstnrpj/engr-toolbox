@@ -22,12 +22,16 @@ Read the modifiers from the brackets. A leading dash, hyphens, spaces or commas 
 
 ## Cook (always)
 
-1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous), state its title, set it `in-progress`, add a progress log entry.
-2. Read what it relies on: its Inputs, `GLOSSARY.md`, the relevant `.ai/maps/`.
-3. Make the code change that satisfies its acceptance criteria. Keep it to what the ticket asks.
-4. Update the progress log with what you changed. Do not tick criteria yet unless a test (`test` modifier) proves them.
+1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous) and state its title.
+2. Branch. Run `node .ai/cli/bin/cli.mjs branch show`. If a working branch is set, switch to it (stop and ask if the working tree has changes unrelated to this ticket; ticket-file edits carry over, never stash), then create the ticket branch from it, named by `node .ai/cli/bin/cli.mjs branch name <id>`, and do all the work there. If the working branch does not exist yet, say so and ask before creating it. If none is set, work on the current branch.
+3. Set the ticket `in-progress` and add a progress log entry.
+4. Read what it relies on: its Inputs, `GLOSSARY.md`, the relevant `.ai/maps/`.
+5. Make the code change that satisfies its acceptance criteria. Keep it to what the ticket asks.
+6. Update the progress log with what you changed. Do not tick criteria yet unless a test (`test` modifier) proves them.
 
-**Cook never commits.** No `git add`, `commit`, `stash`, `reset`, `checkout` or `push`, except under `serve`. The code, the ticket file and `BOARD.md` stay uncommitted.
+**Bugs found along the way.** One in code this change touches that blocks the ticket: stop and say so. One that is unrelated: call the Skill tool with `report-bug` (`Found during: <this ticket>`, status `needs-triage`), add one line to the progress log, and do not fix it. Never fix it silently.
+
+**Cook never commits.** The only git state it changes before `serve` is creating and switching to the ticket branch in step 2. No `git add`, `commit`, `stash`, `reset`, other `checkout` or `push`, except under `serve`. The code, the ticket file and `BOARD.md` stay uncommitted.
 
 ## Modifiers
 
@@ -50,14 +54,21 @@ Summarize in plain words, not a diff:
 Then ask: **"Want to dig deeper?"** If yes, show the changes (`git diff HEAD` plus new files), grouped by area, most important first. Wait for the answer before going on, so `serve` never commits while the user is still deciding.
 
 ### `serve`
-Commit and close the ticket, but only when the work is proven:
+Commit and close the ticket, but only when the work is proven and a human has accepted it:
 
-1. Validate every acceptance criterion: it is ticked and its test passes (run the tests now if `test` was not given). If any is unmet, stop, list what is missing, and do not commit.
-2. Commit the code and tests with a conventional subject: `<type>: <summary> [<ticket>]`, for example `feat: add export [orders/03]`. Type is `feat`, `fix`, `refactor`, `test`, `docs` or `chore`; summary is short, imperative and lowercase.
-3. **Gist.** If the user gave one (`gist: <text>` anywhere in the request, for example `/cook-a-ticket [serve] orders/03 gist: empty carts export a header only`), put it in the commit body, after a blank line, in their words with only spelling fixed. No gist, no body.
-4. Do not commit the ticket file or `BOARD.md`. Record the commit SHA, the test command and its result in the ticket's Evidence.
-5. Run `node .ai/cli/bin/cli.mjs gate deliver --ticket <id>`. If it passes, set the ticket `done`, add a progress log entry ("Served: <SHA>"), and refresh the board (`status --write`). If it fails, leave the ticket `in-progress`, show what the gate reports, and fix it or ask.
-6. Leave the ticket file and `BOARD.md` edits uncommitted for the user.
+1. **Acceptance.** If `taste` has not run in this session, ask once: "Close this as done?" and wait. If the user already tasted (saw the summary and answered), do not ask again.
+2. **Validate** every acceptance criterion: it is ticked and its test passes (run the tests now if `test` was not given). If any is unmet, stop, list what is missing, and do not commit.
+3. **Commit** the code and tests with a conventional subject: `<type>: <summary> [<ticket>]`, for example `feat: add export [orders/03]`. Type is `feat`, `fix`, `refactor`, `test`, `docs` or `chore`; summary is short, imperative and lowercase.
+4. **Gist.** If the user gave one (`gist: <text>` anywhere in the request, for example `/cook-a-ticket [serve] orders/03 gist: empty carts export a header only`), put it in the commit body, after a blank line, in their words with only spelling fixed. No gist, no body.
+5. **Merge.** If a working branch is set: switch to it and run `git merge --no-ff <ticket branch>` with the message `merge <ticket branch> into <working branch> [<ticket>]`. On a conflict, stop and ask; never resolve with a blanket `--ours` or `--theirs`. Keep the ticket branch and offer to delete it. Stay on the working branch and say so. With no working branch set, there is nothing to merge and the commit stays on the current branch.
+6. **Record** in the ticket (do not commit the ticket file or `BOARD.md`). Write only what actually happened:
+   - Evidence `Commits:` the SHA. `Tests:` the command and its result.
+   - Evidence `Review:` the summary and which findings were fixed or noted, only if `review` ran.
+   - Evidence `PR:` `merged into <working branch> (<merge sha>)`, or `not merged (local commit <SHA>)` when no working branch is set.
+   - Progress log entry "Served: <SHA>. Modifiers run: <list, in order, including season changes>."
+   - If the change may affect a map, an API or data doc, or the glossary, add a log line "Docs to check: <which>". Flag only; do not run `update-docs`.
+7. **Close.** Run `node .ai/cli/bin/cli.mjs gate deliver --ticket <id>`. If it passes, set the ticket `done` and refresh the board (`status --write`). If it fails, leave the ticket `in-progress`, show what the gate reports, and fix it or ask.
+8. Leave the ticket file and `BOARD.md` edits uncommitted for the user.
 
 ### `season`
 A follow-up on the ticket you are working on, for when you tried the result and want it different.

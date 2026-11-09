@@ -60,7 +60,7 @@ End-to-end behaviour from the user's point of view. No file paths.
 | `ready-for-human` | Needs a human (judgement, access, or the loop gave up) |
 | `in-progress` | Claimed and being worked |
 | `in-review` | Built, checks green, waiting for review |
-| `done` | Merged and evidence recorded |
+| `done` | Merged into the project's working branch (`branch show`; the main line when none is set) and evidence recorded |
 | `wontfix` | Will not be done; say why in the log |
 
 A ticket is **blocked** when any ticket in `Blocked by` is not `done`. The **frontier** is every `ready-for-agent` ticket that is not blocked, lowest number first.

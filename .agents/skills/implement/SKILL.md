@@ -12,8 +12,9 @@ Work exactly one ticket, in a fresh session. The ticket is not done until `gate 
 
 1. Call the Skill tool with `tickets`. Fetch the ticket (ask if ambiguous) and state its title. If the user described a change and no ticket covers it, follow "Request with no ticket" there: draft, confirm, write the ticket, then continue. If they change the requirements mid-way, follow "Requirements change mid-ticket": update this ticket and its log first.
 2. `node .ai/cli/bin/cli.mjs gate implement --ticket <id>`. If blocked, stop and report.
-3. Claim it: status `in-progress`, progress log entry.
-4. Read its inputs: spec, ADRs, designs, `GLOSSARY.md`, the relevant `.ai/maps/`.
+3. Branch. Run `node .ai/cli/bin/cli.mjs branch show`. If a working branch is set, switch to it (stop and ask if the working tree has changes unrelated to this ticket; ticket-file edits carry over, never stash), then create the ticket branch from it, named by `node .ai/cli/bin/cli.mjs branch name <id>`, and do all the work there. If the working branch does not exist yet, say so and ask before creating it. If none is set, work on the current branch.
+4. Claim it: status `in-progress`, progress log entry.
+5. Read its inputs: spec, ADRs, designs, `GLOSSARY.md`, the relevant `.ai/maps/`.
 
 ## 2. Build, one criterion at a time
 
@@ -38,7 +39,7 @@ Repeat until every line passes:
 
 If anything fails, fix it and go round again. Never weaken an assertion, skip a test, or tick a criterion to get green. After **three full rounds** that still fail for the same reason, stop: write what is failing and why in the progress log, set `ready-for-human`.
 
-When `gate deliver` passes: tick the remaining Evidence lines, set `in-review` (or `done` if the user merges without a PR), add a progress log entry, refresh the board.
+When `gate deliver` passes: tick the remaining Evidence lines, set `in-review`, add a progress log entry, refresh the board. `done` means merged into the working branch: when the user says it is merged, or asks you to merge it, switch to the working branch, run `git merge --no-ff <ticket branch>`, record the merge commit in Evidence `PR:` as `merged into <working branch> (<sha>)`, set `done`, and refresh the board. On a conflict, stop and ask. Keep the ticket branch; offer to delete it. With no working branch set, `done` when the user merges without a PR.
 
 ## 4. Bugs found along the way
 

@@ -1,6 +1,6 @@
 {
   "name": "engr-toolbox",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Ticket-driven engineering workflow for AI coding agents: owned skills, four roles, size tiers, an npx installer, adapters for 11 tools, and CLI gates.",
   "type": "module",
   "main": "./lib/index.mjs",

@@ -15,6 +15,7 @@ import { detectDrift, formatDrift, markSyncPoint } from '../lib/drift.mjs';
 import { checkCommits } from '../lib/commits.mjs';
 import { runLoop } from '../lib/loop.mjs';
 import { installedVersion, versionState, compareVersions, fetchLatestVersion, staleNotice } from '../lib/update.mjs';
+import { workingBranch, currentBranch, branchExists, setWorkingBranch, ticketBranchName, branchStatus, formatBranchStatus } from '../lib/branch.mjs';
 import { guardEdit, guardPrompt, guardCommitMsg } from '../lib/guard.mjs';
 import { readJUnit, recordRun, loadHistory, findFlaky, writeFlaky, writeRunSummary, summarise, buildTrace, formatTrace, writeTrace } from '../lib/qa.mjs';
 import { git } from '../lib/git.mjs';
@@ -51,6 +52,7 @@ Commands:
   drift                Changes since the last sync    --since <ref>   --mark (save HEAD as sync point)
   validate             Structure, tickets, ADRs, map paths, context   --task <api|database|deployment|testing>
   update               Upgrade this project to the latest engr-toolbox   --check (report only, exit 1 if stale)   --dry-run
+  branch [show|set <name> [--create]|unset|status [--branch <name>] [--base <ref>] [--check]|name <ticket>]   Personal working branch: setup, how far behind, ticket branch name
   guard <prompt|edit|commit-msg>   Hook entry points: block edits and commits with no ticket (ENGR_GUARD=block|warn|off)
   check-commits        Every commit references a ticket   --range <base>..<head>
   trace                Acceptance criteria → manual cases → automated tests   --feature <f> --write --strict
@@ -76,7 +78,7 @@ Init options:
 Tools: ${PROVIDERS.join(', ')}
 `;
 
-const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope', 'pipeline', 'dev-branch', 'main-branch', 'release-targets', 'test', 'build', 'install', 'node', 'version', 'version-file', 'provider', 'to', 'owner']);
+const VALUE_FLAGS = new Set(['into', 'mode', 'size', 'profile', 'tools', 'tool', 'tracker', 'target', 'task', 'feature', 'ticket', 'since', 'range', 'agent', 'verify', 'max-tickets', 'max-attempts', 'types', 'junit', 'label', 'search', 'scope', 'pipeline', 'dev-branch', 'main-branch', 'release-targets', 'test', 'build', 'install', 'node', 'version', 'version-file', 'provider', 'to', 'owner', 'working-branch', 'base', 'branch']);
 
 export function parseArgs(argv) {
   const flags = {};
@@ -115,7 +117,8 @@ async function cmdInit(flags, targetDir, forcedTool = null) {
     tools: forcedTool ? [forcedTool] : list(flags.tools || flags.tool) || previous.tools || detectTools(targetDir),
     tracker: flags.tracker || previous.tracker || detectTracker(targetDir),
     scope: flags.scope || previous.scope || 'project',
-    pipeline: pipelineFlags(flags)
+    pipeline: pipelineFlags(flags),
+    workingBranch: flags['working-branch'] ? (/^none$/i.test(flags['working-branch']) ? null : flags['working-branch']) : previous.workingBranch || null
   };
   const interactive = !flags.yes && !forcedTool && process.stdin.isTTY && !flags['dry-run'];
   if (interactive) {
@@ -329,6 +332,41 @@ async function notice(flags, targetDir) {
   if (n) console.error(`\n⚠ ${n}`);
 }
 
+function cmdBranch(args, flags, targetDir) {
+  const sub = args[0] || 'show';
+  if (sub === 'show') {
+    const wb = workingBranch(targetDir);
+    console.log(wb ? `Working branch: ${wb}${branchExists(targetDir, wb) ? '' : '  (does not exist yet: git switch -c ' + wb + ')'}` : 'Working branch: not set (tickets work on the current branch). Set one: branch set <name> --create');
+    console.log(`Current branch: ${currentBranch(targetDir) || '(not a git repository)'}`);
+    return;
+  }
+  if (sub === 'set') {
+    if (!args[1]) throw new Error('Usage: branch set <name> [--create]');
+    const r = setWorkingBranch(targetDir, args[1], { create: !!flags.create });
+    console.log(`Working branch set to ${r.name}${r.created ? ' (created from the current branch)' : ''}.`);
+    if (!r.exists) console.log(`It does not exist yet. Create it: git switch -c ${r.name}   (or: branch set ${r.name} --create)`);
+    return;
+  }
+  if (sub === 'unset') {
+    setWorkingBranch(targetDir, null);
+    console.log('Working branch cleared. Tickets work on the current branch.');
+    return;
+  }
+  if (sub === 'status') {
+    const s = branchStatus(targetDir, { base: flags.base, branch: flags.branch });
+    console.log(formatBranchStatus(s));
+    if (flags.check && s.behind) process.exit(1);
+    return;
+  }
+  if (sub === 'name') {
+    const t = findTicket(loadTickets(targetDir), args[1]);
+    if (!t) throw new Error(`ticket '${args[1] || ''}' not found under tickets/`);
+    console.log(ticketBranchName(t.id, t.title));
+    return;
+  }
+  throw new Error('Usage: branch [show|set <name>|unset|status|name <ticket>]');
+}
+
 function cmdTrace(flags, targetDir) {
   const trace = buildTrace(targetDir, { feature: flags.feature });
   console.log(formatTrace(trace));
@@ -453,6 +491,7 @@ async function main() {
     case 'gate': return cmdGate(args, flags, targetDir);
     case 'drift': return cmdDrift(flags, targetDir);
     case 'check-commits': return cmdCheckCommits(flags, targetDir);
+    case 'branch': return cmdBranch(args, flags, targetDir);
     case 'guard': return cmdGuard(args, targetDir);
     case 'loop': return cmdLoop(flags, targetDir);
     case 'trace': return cmdTrace(flags, targetDir);
