@@ -1,7 +1,7 @@
 {
   "$schema": "./preset.schema.json",
   "name": "engr-toolbox",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "defaultTier": "medium",
   "providers": [
     "claude",

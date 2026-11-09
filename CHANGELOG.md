@@ -4,7 +4,17 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [Unreleased]
+## [0.3.1] - 2026-11-09
+
+Fixes the install picker redraw and adds project uninstall.
+
+### Added
+
+- `uninstall --scope project`: removes an install from a project. Only files this tool wrote go (generated files with the header, `.ai/cli/`, `engr-toolbox.json`, our hook entries in `.claude/settings.json`, our `commit-msg` hook). `AGENTS.md`, `GLOSSARY.md`, `docs/`, `tickets/` and other project-owned files stay. `--dry-run` previews; the toolbox source repository is refused.
+
+### Fixed
+
+- Install picker (size, tools): moving with the arrow keys left copies of the question behind in narrow terminals, because long option lines wrapped and the redraw miscounted rows. Lines are now clipped to the terminal width.
 
 ## [0.3.0] - 2026-11-09
 

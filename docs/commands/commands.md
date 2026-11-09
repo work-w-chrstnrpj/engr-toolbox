@@ -138,7 +138,9 @@ Without `--write` it only shows what would happen. A release job runs only when 
 
 ## uninstall
 
-`--scope global` removes the globally installed skills, roles and `~/.engr-toolbox/`, only files that carry this tool's header. `--tools <list>` limits it, `--dry-run` previews. Project files are yours; remove them with git.
+`--scope global` removes the globally installed skills, roles and `~/.engr-toolbox/`, only files that carry this tool's header. `--tools <list>` limits it, `--dry-run` previews.
+
+`--scope project` removes this project's install: generated files with the header (`.agents/`, tool folders, pointer files), `.ai/cli/`, `engr-toolbox.json`, our entries in `.claude/settings.json` and our `commit-msg` hook. A file whose header you deleted is kept. Project-owned files (`AGENTS.md`, `GLOSSARY.md`, `docs/`, `tickets/`, `qa/`, `.ai/maps`) are never touched; delete them yourself if you want them gone. Run `--dry-run` first; it lists every file. `opencode.json` is merged with your settings and is left alone.
 
 ## measure
 

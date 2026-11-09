@@ -21,6 +21,7 @@ import { readJUnit, recordRun, loadHistory, findFlaky, writeFlaky, writeRunSumma
 import { git } from '../lib/git.mjs';
 import { scanInputs, addInputs, formatInputs, listInputs } from '../lib/inputs.mjs';
 import { resolvePipeline, savePipeline, writePipeline, describePipeline, readVersion, releaseNotes, PIPELINE_MODES, RELEASE_TARGETS } from '../lib/pipeline.mjs';
+import { uninstallProject } from '../lib/uninstall.mjs';
 import { renderDiscover, renderItem, normaliseTopic, topicFromHelpFlag, TOPICS, collect } from '../lib/discover.mjs';
 
 const templateRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -65,7 +66,7 @@ Commands:
                        --custom (files are hand-made by /setup-pipeline; never overwritten) · --no-custom
   release-version      Print the version a release would use     release-notes  CHANGELOG section for a version
   sync                 Regenerate tool adapters from .agents/   --target <tool|all> --check --clean --dry-run --scope project|global
-  uninstall            Remove globally installed skills and roles (only files this tool wrote)   --scope global --tools <list> --dry-run
+  uninstall            Remove an install (only files this tool wrote)   --scope global|project --tools <list> --dry-run
   measure              Token budget per tier
   <tool>               Shorthand for: init --yes --tools <tool>
 
@@ -216,13 +217,25 @@ function cmdSync(flags, targetDir) {
 }
 
 function cmdUninstall(flags, targetDir) {
-  if ((flags.scope || 'global') !== 'global') {
-    throw new Error('Only --scope global can be uninstalled. Project files are yours: remove them with git.');
+  const scope = flags.scope || 'global';
+  const dry = !!flags['dry-run'];
+  if (scope === 'project') {
+    if (fs.existsSync(path.join(targetDir, 'template')) && fs.existsSync(path.join(targetDir, 'preset.config.json'))) {
+      throw new Error('This is the toolbox source repository, not an installed project. Run uninstall inside a project that used init.');
+    }
+    const results = uninstallProject(targetDir, { dryRun: dry });
+    const removed = results.filter(r => r.status === 'removed');
+    const kept = results.filter(r => r.status === 'skipped_user_file');
+    console.log(`${dry ? 'Would remove' : 'Removed'} ${removed.length} file(s) written by this tool. Kept ${kept.length} file(s) it did not write.`);
+    console.log('Always kept (yours): AGENTS.md, GLOSSARY.md, docs/, tickets/, qa/, .ai/maps and context-routing.md. Delete them yourself if you want them gone.');
+    if (flags.verbose || dry) printResults(results, targetDir);
+    return;
   }
-  const results = uninstallGlobal({ tools: list(flags.tools) || PROVIDERS, dryRun: !!flags['dry-run'] });
+  if (scope !== 'global') throw new Error(`Unknown scope '${scope}'. Use: global, project`);
+  const results = uninstallGlobal({ tools: list(flags.tools) || PROVIDERS, dryRun: dry });
   const removed = results.filter(r => r.status === 'removed');
   const kept = results.filter(r => r.status === 'skipped_user_file');
-  console.log(`${flags['dry-run'] ? 'Would remove' : 'Removed'} ${removed.length} file(s) written by this tool. Kept ${kept.length} file(s) it did not write.`);
+  console.log(`${dry ? 'Would remove' : 'Removed'} ${removed.length} file(s) written by this tool. Kept ${kept.length} file(s) it did not write.`);
   if (flags.verbose) printResults(results, process.env.HOME || '/');
 }
 
