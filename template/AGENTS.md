@@ -29,6 +29,7 @@ grill-with-docs → design (if needed) → to-spec → to-tickets → implement 
 
 - Existing repo, first time: `/adopt-project`. Team handed you documents: `/ingest`.
 - Asked to implement something with no ticket? Create the ticket first (draft, confirm, write, then proceed); see the `tickets` skill. Requirements change mid-ticket? Edit that ticket and log the change, then change the code.
+- Personal working branch (`branch show`): tickets branch off it and `done` means merged into it. Behind the main line? `/catch-up`.
 - One ticket per session. Claim it, log progress, reference its ID in every commit.
 - A ticket closes only with evidence (commits, tests, review, docs updated).
 - After pulling teammates' changes: `update-docs` (uses `drift`).

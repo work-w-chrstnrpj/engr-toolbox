@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-09
+
+Adds a personal working branch for tickets, a skill to catch stale branches up, and a fuller record from `cook-a-ticket`.
+
+### Added
+
+- Personal working branch: set at install (`--working-branch`, step 7) or any time with `branch set <name> [--create]`. `implement` and `cook-a-ticket` create a ticket branch from it (`branch name <ticket>`); `done` now means merged into the working branch. `cook-a-ticket [serve]` does the merge; `implement` merges when you ask. `branch status [--base] [--check]` shows how far behind it is.
+- `catch-up` skill: brings a stale branch up to date with another branch (`/catch-up [branch] [from base]`; the working branch from the repo default when omitted), with conflicts resolved alongside the user. The scenarios guide documents the setup, the flow and the plain git commands.
+
+### Changed
+
+- `cook-a-ticket`: `serve` asks once for acceptance unless you already tasted, merges the ticket branch into the working branch, records the review summary, the modifiers run, a `PR:` line (`merged into <branch>`) and a "Docs to check" flag, and cook files unrelated bugs with `report-bug` instead of fixing them.
+- `done` now means merged into the project's working branch (the main line when none is set).
+
 ## [0.2.0] - 2026-11-08
 
 Adds a human-in-the-loop way to build a ticket, and a defined commit format for `implement`.

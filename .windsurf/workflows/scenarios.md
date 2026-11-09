@@ -41,7 +41,7 @@ Every flow ends the same way: work lives on a ticket, the ticket ends with evide
 | `taste` | A high-level summary (not a diff), then asks "Want to dig deeper?" and shows the diff if yes |
 | `test` | Tests for each acceptance criterion, written and run |
 | `review` | `code-review` on the uncommitted changes |
-| `serve` | Checks every criterion is met, commits with a proper message (add `gist: ...` for the body), and closes the ticket |
+| `serve` | Asks "Close this as done?" unless you already tasted, checks every criterion is met, commits with a proper message (add `gist: ...` for the body), records what happened, and closes the ticket |
 | `season` | A follow-up on the ticket in hand: you tried it and want it different. Edits the ticket, then the code |
 
 A typical session:
@@ -53,6 +53,30 @@ A typical session:
 ```
 
 Use `/implement` when you want it delivered unattended or in a loop; use `/cook-a-ticket` when you want to see and decide at each step. It is not for `/cli loop` or `/implement-spec`.
+
+### Personal working branch
+
+For people who keep their own branch (for example `my-personal-branch`) instead of building straight on `main` or `develop`. Tickets branch off it, and `done` means merged into it.
+
+| Step | How |
+|---|---|
+| Set it up | At install (`init`, step 7, or `--working-branch my-personal-branch`), or any time: `branch set my-personal-branch --create` |
+| Change it later | `branch set <other>`; `branch unset` to go back to working on the current branch; `branch show` to see the current setting |
+| Build a ticket | `/implement` or `/cook-a-ticket` switch to the working branch and create a ticket branch from it (`branch name <ticket>` gives the name, such as `ticket/orders-03-export-csv`) |
+| Finish | `/cook-a-ticket [serve]` merges the ticket branch into the working branch and sets `done`. `/implement` stops at `in-review`; when you say it is merged, or ask for the merge, it merges and sets `done` |
+| Ship | Open a PR from the working branch to `main` or `develop` the way you normally do; the toolbox does not push for you |
+
+**The working branch is stale or behind.** Check how far: `branch status --base main` (add `--branch <name>` for another branch, `--check` to fail when behind). Catch it up with `/catch-up` (name the branch and the source: `/catch-up my-feature from develop`), which fetches, lists what is incoming and which files are likely to conflict, asks merge or rebase, resolves conflicts with you, runs the checks, and suggests `update-docs` when needed. It never pushes. By hand, with git:
+
+```bash
+git fetch origin
+git switch my-personal-branch
+git merge origin/main        # keeps history; safe if the branch is pushed or shared
+# or, only if the branch is yours and unpushed:
+git rebase origin/main       # linear history; rewrites commits
+```
+
+Ticket branches already in flight are then behind the working branch: run `git merge my-personal-branch` on each, or `/catch-up <ticket branch> from my-personal-branch`.
 
 ## Fixing
 

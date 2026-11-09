@@ -34,10 +34,25 @@ Install or upgrade. Interactive in a terminal; `--yes` uses flags, then saved ch
 | `--tools` | comma list of tools |
 | `--tracker` | `local`, `github`, `other` |
 | `--pipeline`, `--dev-branch`, `--main-branch`, `--release-targets` | Optional CI/CD (Continuous Integration and Continuous Delivery) at install time; same meaning as in `pipeline` |
+| `--working-branch` | Personal branch that tickets branch off and merge into (`none` for no working branch). Asked in step 7 of the interactive install; change any time with `branch set` |
 | `--scope` | `project` (default) or `global`: where skills, roles, workflows and policies go. Global puts them in `~/.engr-toolbox/.agents/` and each tool's user folder; project-specific files stay in the project |
 | `--yes`, `--dry-run`, `--force`, `--verbose` | |
 
 Writes `.agents/` (managed), the tier's scaffold (project-owned, created once), `.ai/cli/`, `engr-toolbox.json`, and adapters. `--force` overwrites project-owned files. `<tool>` alone (for example `claude`) is shorthand for `init --yes --tools <tool>`.
+
+## branch
+
+Your personal working branch: `implement` and `cook-a-ticket` create a ticket branch from it, and `done` means merged into it. Saved in `engr-toolbox.json` as `workingBranch`. With none set, tickets work on the current branch.
+
+| Command | Does |
+|---|---|
+| `branch` or `branch show` | The working branch and the current branch |
+| `branch set <name> [--create]` | Set (and optionally create from the current branch) the working branch |
+| `branch unset` | Work on the current branch again |
+| `branch status [--branch <name>] [--base <ref>] [--check]` | How far a branch (default: the working branch) is behind and ahead of the base (default: origin's default branch), with the incoming commits. `--check` exits 1 when behind |
+| `branch name <ticket>` | The ticket branch name, such as `ticket/orders-03-export-csv` |
+
+To bring a stale branch up to date, use the `catch-up` skill.
 
 ## update
 
