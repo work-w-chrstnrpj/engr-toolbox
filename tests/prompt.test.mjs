@@ -13,3 +13,13 @@ test('fitLines leaves short lines and unknown widths alone', () => {
   assert.deepEqual(fitLines(['short'], 80), ['short']);
   assert.deepEqual(fitLines(['x'.repeat(300)], undefined), ['x'.repeat(300)]);
 });
+
+import { fitRows } from '../lib/prompt.mjs';
+
+test('fitRows keeps the picker shorter than the terminal and the cursor visible', () => {
+  const lines = ['q', 'hint', ...Array.from({ length: 12 }, (_, i) => `c${i}`)];
+  const out = fitRows(lines, 8, 2 + 10);
+  assert.ok(out.length <= 7);
+  assert.ok(out.includes('c10'));
+  assert.deepEqual(fitRows(lines, 40, 3), lines);
+});

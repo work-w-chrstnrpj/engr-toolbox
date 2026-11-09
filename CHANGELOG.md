@@ -14,7 +14,7 @@ Fixes the install picker redraw and adds project uninstall.
 
 ### Fixed
 
-- Install picker (size, tools): moving with the arrow keys left copies of the question behind in narrow terminals, because long option lines wrapped and the redraw miscounted rows. Lines are now clipped to the terminal width.
+- Install picker (size, tools): moving with the arrow keys left copies of the question behind in narrow terminals, because long option lines wrapped and the redraw miscounted rows. Lines are now clipped to the terminal width, and a list taller than the terminal shows a scrolling window of choices.
 
 ## [0.3.0] - 2026-11-09
 
