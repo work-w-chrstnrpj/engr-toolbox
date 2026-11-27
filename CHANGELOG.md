@@ -4,6 +4,14 @@ All notable changes to this project are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [0.3.2] - 2026-11-27
+
+Documentation release: explains when to use `/implement` and when to use `/cook-a-ticket`.
+
+### Changed
+
+- Guide: new section "Two ways to build a ticket". `/implement` is TDD (test-driven development, test-first): a failing test before each piece of code, always with tests. `/cook-a-ticket` with the `test` modifier is TLD (test-last development): build, try, then prove, with tests optional until `serve` closes the ticket. The section says what each means, where each works best, what each costs, and how to choose.
+
 ## [0.3.1] - 2026-11-09
 
 Fixes the install picker redraw and adds project uninstall.
