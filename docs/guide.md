@@ -147,6 +147,32 @@ The agent checks the gate, claims the ticket, then for **every** acceptance crit
 
 **Bugs found along the way:** bugs in its own new code it simply fixes. Small existing bugs in code it touches it fixes with their own regression test and notes in the evidence. Anything else it files with `report-bug` (`Found during: cart/01`, status `needs-triage`) and carries on, unless the bug blocks the ticket or is a security or data-loss risk: then it stops and hands the ticket to you.
 
+#### Two ways to build a ticket: `/implement` and `/cook-a-ticket`
+
+Both end with every acceptance criterion proven by a passing test. They differ in **when** the test is written.
+
+|  | `/implement` | `/cook-a-ticket` |
+|---|---|---|
+| Approach | **TDD** (test-driven development), also called test-first | **TLD** (test-last development), when you add the `test` modifier |
+| Order, per criterion | Write a failing test, see it fail, write the smallest code that passes, tick the criterion | Write the code change, then write one test per criterion, run it, tick the criterion |
+| Tests | Always | Optional modifier; `serve` refuses to close the ticket without them |
+| Commits | Commits code and tests itself | Cook never commits; only `serve` does, after you accepted the result |
+| Closes the ticket | Yes, when `gate deliver` passes | Only with `serve` |
+
+**TDD (`/implement`) means** the test comes first. You see it fail for the right reason before any code exists, so the test is proven to catch the behaviour, and the code stays no bigger than the criterion needs. Each criterion is one small red, then green step.
+
+- **Works best for:** behaviour where being wrong is costly (money, permissions, data), clear acceptance criteria, bug fixes (the failing test reproduces the bug), and unattended runs (`engr loop`), where the failing test is the only proof.
+- **Costs:** slower per ticket, and it needs criteria you can state before building. Not a fit when you do not yet know what you want.
+- **Limit:** the gate proves each criterion has a passing test named after it. It cannot prove the test was written first; that part is the agent following the skill.
+
+**TLD (`/cook-a-ticket [test-...]`) means** you build the change first, try it, then prove it. Modifiers in square brackets add the steps you want: `taste` (plain summary), `test`, `review`, `serve` (commit, merge and close). `season` changes the ticket and the code when you tried the result and want it different.
+
+- **Works best for:** small or exploratory changes, UI and copy tweaks, work where you will judge the result yourself, and anything you expect to reshape after seeing it.
+- **Costs:** a test written after the code can pass because it copies what the code does, so it proves less than a test that failed first. `test` is optional, so a ticket can reach `serve` late and fail there.
+- **Safety net:** `serve` checks every criterion is ticked and its test passes before it commits, and `gate deliver` runs before the ticket is `done`.
+
+**Which one?** Use `/implement` when correctness matters more than speed or the criteria are firm. Use `/cook-a-ticket [test-review-taste-serve]` when you want to see and steer the result, then close it proven. Both leave the same evidence in the ticket, so you can use either per ticket.
+
 ### Step 7 · Automate, SDET
 
 ```text
